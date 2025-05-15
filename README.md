@@ -92,13 +92,6 @@ php bin/console doctrine:fixtures:load
    ll
    ```
 
-8. **Ajustar variables de entorno**
-   En `html/.env`, configura la base de datos:
-
-   ```env
-   DATABASE_URL="mysql://db:db@127.0.0.1:3306/picancode"
-   ```
-
 ## Uso
 
 Después de crear el enlace simbólico:
