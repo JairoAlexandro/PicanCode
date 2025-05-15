@@ -1,0 +1,18 @@
+# config/services.yaml
+parameters:
+    avatars_directory: '%kernel.project_dir%/public/uploads/avatars'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        # inyecta automáticamente el parámetro en cualquier constructor
+        bind:
+            $avatars_directory: '%avatars_directory%'
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'

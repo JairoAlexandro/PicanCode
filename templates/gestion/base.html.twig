@@ -1,0 +1,43 @@
+{# templates/gestion/base.html.twig #}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Panel de Gestión{% endblock %}</title>
+    <style>
+      /* Tus estilos de sidebar aquí… */
+      body { display: flex; margin: 0; font-family: sans-serif; }
+      aside {
+        width: 220px;
+        background: #2b2b2b;
+        color: #fff;
+        min-height: 100vh;
+        padding: 1rem;
+      }
+      aside a { display: block; color: #fff; margin: .5rem 0; text-decoration: none; }
+      aside a:hover { background: #3b3b3b; }
+      main { flex:1; padding: 1.5rem; background: #1b1b1b; color: #fff; }
+      .topbar { background: #3b3b3b; padding: .5rem 1rem; color:#fff; }
+    </style>
+    {% block stylesheets %}{% endblock %}
+  </head>
+  <body>
+    <aside>
+      <h2>🛠 Gestión</h2>
+      <a href="{{ path('user_index') }}">Usuarios</a>
+      <a href="{{ path('post_index') }}">Posts</a>
+      <a href="{{ path('comment_index') }}">Comentarios</a>
+      <a href="{{ path('like_index') }}">Likes</a>
+      <a href="{{ path('follow_index') }}">Seguidores</a>
+      <a href="{{ path('message_index') }}">Mensajes</a>
+      <hr>
+      <a href="{{ path('gestion_logout') }}">Cerrar Sesión</a>
+    </aside>
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <div class="topbar">
+        {% block topbar %}<strong>Panel de Gestión</strong>{% endblock %}
+      </div>
+      <main>{% block body %}{% endblock %}</main>
+    </div>
+  </body>
+</html>

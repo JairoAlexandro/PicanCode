@@ -1,0 +1,22 @@
+{# templates/security/gestion_login.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Login Gestión{% endblock %}
+
+{% block body %}
+  <h1>Acceso Área de Gestión</h1>
+
+  {% if error %}
+    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+  {% endif %}
+
+  <form action="{{ path('gestion_login') }}" method="post">
+    <label for="username">Usuario</label>
+    <input type="text" id="username" name="_username" value="{{ last_username }}" required autofocus>
+
+    <label for="password">Contraseña</label>
+    <input type="password" id="password" name="_password" required>
+
+    <button type="submit">Entrar Gestión</button>
+  </form>
+{% endblock %}

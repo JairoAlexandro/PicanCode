@@ -1,0 +1,21 @@
+{# templates/gestion/panel.html.twig #}
+{% extends 'gestion/base.html.twig' %}
+
+{% block title %}Panel de Gestión{% endblock %}
+
+{% block topbar %}
+  <strong>Bienvenido, {{ app.user.userIdentifier }}!</strong>
+{% endblock %}
+
+{% block body %}
+  <h1>🔧 Panel de Gestión</h1>
+  <p>Desde aquí puedes acceder a las distintas secciones de administración:</p>
+  <ul>
+    <li><a href="{{ path('user_index') }}">Gestión de Usuarios</a></li>
+    <li><a href="{{ path('post_index') }}">Gestión de Posts</a></li>
+    <li><a href="{{ path('comment_index') }}">Gestión de Comentarios</a></li>
+    <li><a href="{{ path('like_index') }}">Gestión de Likes</a></li>
+    <li><a href="{{ path('follow_index') }}">Gestión de Seguidores</a></li>
+    <li><a href="{{ path('message_index') }}">Gestión de Mensajes</a></li>
+  </ul>
+{% endblock %}

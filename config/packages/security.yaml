@@ -1,0 +1,55 @@
+security:
+    enable_authenticator_manager: true
+
+    password_hashers:
+        App\Entity\User: 'auto'
+        Symfony\Component\Security\Core\User\InMemoryUser: 'auto'
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: username
+        in_memory_provider:
+            memory:
+                users:
+                    picanadmin:
+                        password: '$2y$13$HTtaB9d00Uum4CcOZKIwueOAzOL9njCUAb.CbLPgmxTDCCuLpPoTa'
+                        roles: ['ROLE_ADMIN']
+
+    firewalls:
+        gestion:
+            pattern: ^/gestion
+            provider: in_memory_provider
+            lazy: true
+
+            form_login:
+                login_path:          gestion_login
+                check_path:          gestion_login
+                default_target_path: gestion_panel
+
+            logout:
+                path:   gestion_logout
+                target: gestion_login
+
+        main:
+            pattern: ^/
+            provider: app_user_provider
+            lazy: true
+
+            form_login:
+                login_path:          app_login
+                check_path:          app_login
+                default_target_path: post_index
+
+            logout:
+                path:   app_logout
+                target: app_home
+
+    access_control:
+        - { path: ^/login$,          roles: PUBLIC_ACCESS }
+        - { path: ^/logout$,         roles: PUBLIC_ACCESS }
+        - { path: ^/gestion/login$,  roles: PUBLIC_ACCESS }
+        - { path: ^/gestion/logout$, roles: PUBLIC_ACCESS }
+        - { path: ^/gestion/panel$,  roles: ROLE_ADMIN }
+        - { path: ^/,                roles: ROLE_USER }

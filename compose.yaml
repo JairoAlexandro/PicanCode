@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Servicio PHP-FPM
+  php:
+    image: php:8.2-fpm
+    container_name: pican_php
+    working_dir: /var/www/html
+    volumes:
+      - ./PicanCode:/var/www/html:delegated
+      # Si necesitas ajustes de php.ini, descomenta esta línea:
+      # - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+    environment:
+      # Ajusta el DATABASE_URL de Symfony
+      DATABASE_URL: "mysql://symfony:secret@db:3306/picancode?serverVersion=8.0"
+    depends_on:
+      - db
+
+  # Servicio Nginx
+  nginx:
+    image: nginx:stable-alpine
+    container_name: pican_nginx
+    ports:
+      - "8080:80"      # Expondrá tu web en http://localhost:8080
+    volumes:
+      - ./PicanCode:/var/www/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+
+  # Servicio MySQL
+  db:
+    image: mysql:8.0
+    container_name: pican_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: picancode
+      MYSQL_USER: symfony
+      MYSQL_PASSWORD: 
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"    # Para que DBeaver (u otra GUI) se conecte en localhost:3306
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

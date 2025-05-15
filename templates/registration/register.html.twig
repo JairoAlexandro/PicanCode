@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PicanCode – Register{% endblock %}
+
+{% block stylesheets %}
+<style>
+  body { background: #1b1b1b; }
+  .register-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    background: #2b2b2b;
+    padding: 2rem;
+    border-radius: 1rem;
+    color: #fff;
+  }
+  .logo {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .logo .red { color: #e74c3c; }
+  .register-container label { display: block; margin-top: 1rem; font-weight: bold; }
+  .register-container input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 2rem;
+    background: #3b3b3b;
+    color: #fff;
+    margin-top: 0.5rem;
+  }
+  .register-container button {
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 1.5rem;
+    background: #e74c3c;
+    border: none;
+    border-radius: 2rem;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  .register-container button:hover {
+    background: #c0392b;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="register-container">
+  <div class="logo">
+    Pican<span class="red">Code</span>
+  </div>
+
+  {{ form_start(registrationForm) }}
+
+    {{ form_row(registrationForm.username) }}
+    {{ form_row(registrationForm.email) }}
+    {{ form_row(registrationForm.plainPassword.first) }}
+    {{ form_row(registrationForm.plainPassword.second) }}
+
+    <button type="submit">Sign up</button>
+
+  {{ form_end(registrationForm) }}
+</div>
+{% endblock %}

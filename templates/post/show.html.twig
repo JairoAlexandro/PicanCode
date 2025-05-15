@@ -1,0 +1,211 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.post-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: #232323;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px #0002;
+}
+.post-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.post-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+.post-meta {
+  color: #aaa;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.post-image {
+  max-width: 100%;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px #0004;
+}
+.post-content {
+  color: #eee;
+  font-size: 1.15rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.like-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+.like-btn {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
+  padding: 0;
+}
+.like-btn.liked {
+  color: #fff;
+  background: #e74c3c;
+  border-radius: 1rem;
+  padding: 0.2rem 1rem;
+}
+.action-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.action-links a {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+.action-links a:hover {
+  color: #e74c3c;
+}
+.comments-section {
+  margin-top: 2rem;
+}
+.comments-section h4 {
+  color: #fff;
+  margin-bottom: 1rem;
+}
+.comment-card {
+  background: #292929;
+  padding: 1rem 1.2rem;
+  border-radius: 0.7rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 4px #0002;
+}
+.comment-meta {
+  font-size: 0.95rem;
+  color: #aaa;
+  margin-bottom: 0.3rem;
+}
+.comment-author {
+  font-weight: bold;
+  color: #e74c3c;
+}
+.comment-content {
+  color: #eee;
+  margin: 0;
+}
+.comment-form {
+  margin-top: 1.5rem;
+  background: #232323;
+  padding: 1rem 1.2rem;
+  border-radius: 0.7rem;
+  box-shadow: 0 1px 4px #0002;
+}
+.comment-form label {
+  color: #fff;
+  font-weight: bold;
+}
+.comment-form textarea {
+  width: 100%;
+  min-height: 60px;
+  border-radius: 0.4rem;
+  border: 1px solid #3b3b3b;
+  background: #1b1b1b;
+  color: #fff;
+  padding: 0.7rem;
+  margin-bottom: 0.7rem;
+  resize: vertical;
+}
+.comment-form button {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 0.4rem;
+  padding: 0.5rem 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.comment-form button:hover {
+  background: #c0392b;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="post-container">
+  <div class="post-header">
+    <div class="post-title">{{ post.title }}</div>
+    <div class="post-meta">
+      Por: <span class="comment-author">{{ post.user.username }}</span>
+    </div>
+    {% if post.media %}
+      <img src="/uploads/posts/{{ post.media }}" alt="Imagen del post" class="post-image" />
+    {% endif %}
+  </div>
+  <div class="post-content">{{ post.content }}</div>
+  <div class="like-section">
+    <span style="color:#e74c3c;font-weight:bold; font-size:1.2rem;">
+      ♥ {{ post.likes|length }} Me gusta
+    </span>
+    {% if app.user %}
+      <form action="{{ path('post_like', {'id': post.id}) }}" method="POST" style="display:inline;">
+        {% set userLiked = post.likes|filter(like => like.user.id == app.user.id)|length > 0 %}
+        <button type="submit" class="like-btn{% if userLiked %} liked{% endif %}">
+          {% if userLiked %}
+            Quitar Me gusta
+          {% else %}
+            Me gusta
+          {% endif %}
+        </button>
+      </form>
+    {% endif %}
+  </div>
+  {% if app.user and app.user == post.user %}
+    <div class="action-links">
+      <a href="{{ path('post_edit', {'id': post.id}) }}">Editar</a>
+      <a href="{{ path('post_delete', {'id': post.id}) }}" onclick="return confirm('¿Eliminar publicación?')">Eliminar</a>
+    </div>
+  {% endif %}
+  <hr>
+  <div class="comments-section">
+    <h4>Comentarios ({{ post.comments|length }})</h4>
+    {% for comment in post.comments %}
+      <div class="comment-card">
+        <div class="comment-meta">
+          <span class="comment-author">{{ comment.user.username }}</span>
+          <span style="margin-left:0.7rem; color:#888; font-size:0.95em;">{{ comment.createdAt|date('d/m/Y H:i') }}</span>
+        </div>
+        <p class="comment-content">{{ comment.content }}</p>
+      </div>
+    {% else %}
+      <p style="color:#aaa;">No hay comentarios aún.</p>
+    {% endfor %}
+    {% if app.user %}
+      <div class="comment-form">
+        {{ form_start(commentForm, {'action': path('post_comment', {'id': post.id}) }) }}
+          {{ form_row(commentForm.content) }}
+          <button type="submit">Comentar</button>
+        {{ form_end(commentForm) }}
+      </div>
+    {% else %}
+      <p><a href="{{ path('app_login') }}">Inicia sesión</a> para comentar.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

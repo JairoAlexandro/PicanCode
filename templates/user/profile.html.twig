@@ -1,0 +1,171 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Perfil de {{ user.username }}{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.profile-container {
+  max-width: 1100px;
+  margin: 2.5rem auto;
+  background: #232323;
+  padding: 2.5rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px #0002;
+}
+.profile-header {
+  margin-bottom: 2rem;
+}
+.profile-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.profile-info {
+  color: #eee;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+.profile-avatar {
+  max-width: 120px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px #0004;
+}
+.profile-bio {
+  color: #aaa;
+  margin-bottom: 1rem;
+}
+.profile-divider {
+  border: none;
+  border-top: 2px solid #fff2;
+  margin: 2rem 0 1.5rem 0;
+}
+.posts-title {
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+.posts-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+.post-card {
+  background: #232323;
+  padding: 1.2rem 1.2rem 1.5rem 1.2rem;
+  border-radius: 1rem;
+  max-width: 300px;
+  min-width: 260px;
+  flex: 1 1 260px;
+  box-shadow: 0 2px 8px #0002;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.post-card h4 {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.7rem;
+  text-align: center;
+}
+.post-card img {
+  max-width: 100%;
+  border-radius: 0.7rem;
+  margin-bottom: 0.7rem;
+  box-shadow: 0 1px 4px #0003;
+}
+.post-card p {
+  color: #eee;
+  font-size: 1rem;
+  margin-bottom: 0.7rem;
+  text-align: center;
+}
+.post-likes {
+  margin: 0.5rem 0 1rem 0;
+  color: #e74c3c;
+  font-weight: bold;
+  text-align: center;
+}
+.post-actions {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+.btn-action {
+  padding: 0.4rem 1.1rem;
+  border-radius: 0.4rem;
+  font-weight: bold;
+  font-size: 0.98rem;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  display: inline-block;
+}
+.btn-view {
+  background: #3498db;
+  color: #fff;
+}
+.btn-view:hover {
+  background: #217dbb;
+}
+.btn-edit {
+  background: #f1c40f;
+  color: #232323;
+}
+.btn-edit:hover {
+  background: #d4ac0d;
+}
+.btn-delete {
+  background: #e74c3c;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #c0392b;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="profile-container">
+  <div class="profile-header">
+    <div class="profile-title">Perfil de {{ user.username }}</div>
+    <div class="profile-info"><strong>Email:</strong> {{ user.email }}</div>
+    {% if user.avatar %}
+      <img src="/uploads/avatars/{{ user.avatar }}" alt="Avatar de {{ user.username }}" class="profile-avatar">
+    {% endif %}
+    {% if user.bio %}
+      <div class="profile-bio"><strong>Bio:</strong> {{ user.bio }}</div>
+    {% endif %}
+    <div class="profile-info"><strong>Miembro desde:</strong> {{ user.createdAt|date('d/m/Y') }}</div>
+  </div>
+  <hr class="profile-divider">
+  <div class="posts-title">Mis publicaciones</div>
+  <div class="posts-list">
+    {% for post in user.getPosts %}
+      <div class="post-card">
+        <h4>{{ post.title }}</h4>
+        {% if post.media %}
+          <img src="/uploads/posts/{{ post.media }}" alt="Imagen del post" />
+        {% endif %}
+        <p>{{ post.content|slice(0,100) }}{% if post.content|length > 100 %}...{% endif %}</p>
+        <div class="post-likes">♥ {{ post.likes|length }} Me gusta</div>
+        <div class="post-actions">
+          <a href="{{ path('post_show', {'id': post.id}) }}" class="btn-action btn-view">Ver</a>
+          {% if app.user and app.user == user %}
+            <a href="{{ path('post_edit', {'id': post.id}) }}" class="btn-action btn-edit">Editar</a>
+            <a href="{{ path('post_delete', {'id': post.id}) }}" class="btn-action btn-delete" onclick="return confirm('¿Eliminar publicación?')">Eliminar</a>
+          {% endif %}
+        </div>
+      </div>
+    {% else %}
+      <p style="color:#aaa;">No has publicado nada aún.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
