@@ -179,7 +179,10 @@
   {% if app.user and app.user == post.user %}
     <div class="action-links">
       <a href="{{ path('post_edit', {'id': post.id}) }}">Editar</a>
-      <a href="{{ path('post_delete', {'id': post.id}) }}" onclick="return confirm('¿Eliminar publicación?')">Eliminar</a>
+      <form action="{{ path('post_delete', {'id': post.id}) }}" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar publicación?')">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+        <button type="submit" class="btn-action btn-delete">Eliminar</button>
+      </form>
     </div>
   {% endif %}
   <hr>

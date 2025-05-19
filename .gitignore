@@ -1,6 +1,7 @@
-
 ###> symfony/framework-bundle ###
 /.env
+/.env.test
+/.env.stage
 /.env.local
 /.env.local.php
 /.env.*.local
@@ -10,15 +11,31 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
 
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
-###< symfony/phpunit-bridge ###
+composer.phar
+public/relaxed/
+public/procesarRFEG/
+public/uploads/
+/symfony.lock
+/nbproject/
+/package-lock.json
+
+###> lexik/jwt-authentication-bundle ###
+###/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+contabilidad
+listado-jugadores
+
+/public/.htaccess
 
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
@@ -26,3 +43,12 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
+/compose.override.yaml
+/compose.yaml
+/phpstan.dist.neon
+/.idea
+composer.json
+cypress.config.js

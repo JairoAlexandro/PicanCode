@@ -44,8 +44,12 @@ class PostController extends AbstractController
             }
             $em->persist($post);
             $em->flush();
-            return $this->redirectToRoute('post_index');
+
+            return $this->redirectToRoute('user_profile', [
+                'id' => $post->getUser()->getId(),
+            ]);
         }
+
         return $this->render('post/new.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -56,7 +60,7 @@ class PostController extends AbstractController
     {
         $commentForm = $this->createForm(CommentType::class)->createView();
         return $this->render('post/show.html.twig', [
-            'post'        => $post,
+            'post' => $post,
             'commentForm' => $commentForm,
         ]);
     }
@@ -76,8 +80,10 @@ class PostController extends AbstractController
                 $post->setMedia($newFilename);
             }
             $em->flush();
+
             return $this->redirectToRoute('post_show', ['id' => $post->getId()]);
         }
+
         return $this->render('post/edit.html.twig', [
             'post' => $post,
             'form' => $form->createView(),
@@ -87,10 +93,16 @@ class PostController extends AbstractController
     #[Route('/{id}/delete', name: 'post_delete', methods: ['POST'])]
     public function delete(Post $post, Request $request, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $post->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
+            $userId = $post->getUser()->getId();
             $em->remove($post);
             $em->flush();
+
+            return $this->redirectToRoute('user_profile', [
+                'id' => $userId,
+            ]);
         }
+
         return $this->redirectToRoute('post_index');
     }
 }

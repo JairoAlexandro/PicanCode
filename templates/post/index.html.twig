@@ -1,23 +1,122 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inicio{% endblock %}
+{% block title %}Publicaciones recientes{% endblock %}
+
+{% block stylesheets %}
+<style>
+  .posts-section {
+    padding: 2rem 0;
+  }
+  .posts-title {
+    color: #fff;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .posts-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+  }
+  .post-card {
+    background: #232323;
+    padding: 1rem;
+    border-radius: 1rem;
+    max-width: 350px;
+    flex: 1 1 350px;
+    box-shadow: 0 2px 8px #0002;
+    display: flex;
+    flex-direction: column;
+  }
+  .post-image img {
+    max-width: 100%;
+    border-radius: 0.5rem;
+    margin-bottom: 0.7rem;
+  }
+  .post-content {
+    flex: 1;
+  }
+  .post-title a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+  }
+  .post-meta {
+    color: #aaa;
+    font-size: 0.9em;
+    margin: 0.3rem 0 0.7rem;
+  }
+  .post-snippet {
+    color: #eee;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  .post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+  .post-likes {
+    color: #e74c3c;
+    font-weight: bold;
+  }
+  .btn-action.btn-view {
+    padding: 0.4rem 1rem;
+    border-radius: 0.5rem;
+    background: #3498db;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  .btn-action.btn-view:hover {
+    background: #217dbb;
+  }
+  .no-posts {
+    color: #aaa;
+    text-align: center;
+    font-size: 1rem;
+    margin-top: 2rem;
+  }
+</style>
+{% endblock %}
 
 {% block body %}
-<h2>Publicaciones recientes</h2>
-<div style="display:flex;flex-wrap:wrap;gap:2rem;justify-content:center;">
-  {% for post in posts %}
-    <div style="background:#232323;padding:1rem;border-radius:1rem;max-width:350px;flex:1 1 350px;box-shadow:0 2px 8px #0002;">
-      <h4>{{ post.title }}</h4>
-      <p style="color:#aaa;font-size:0.9em;">Por {{ post.user.username }}</p>
-      {% if post.media %}
-        <img src="/uploads/posts/{{ post.media }}" alt="Imagen del post" style="max-width:100%;border-radius:0.5rem;" />
-      {% endif %}
-      <p>{{ post.content|slice(0,120) }}{% if post.content|length > 120 %}...{% endif %}</p>
-      <div style="margin:0.5rem 0;color:#e74c3c;font-weight:bold;">♥ {{ post.likes|length }} Me gusta</div>
-      <a href="{{ path('post_show', {'id': post.id}) }}" class="btn btn-sm btn-info">Ver</a>
-    </div>
-  {% else %}
-    <p style="color:#aaa;">No hay publicaciones aún.</p>
-  {% endfor %}
-</div>
+<section class="posts-section">
+  <h2 class="posts-title">Publicaciones recientes</h2>
+  <div class="posts-list">
+    {% for post in posts %}
+      <article class="post-card">
+        {% if post.media %}
+          <div class="post-image">
+            <img src="/uploads/posts/{{ post.media }}" alt="{{ post.title }}">
+          </div>
+        {% endif %}
+
+        <div class="post-content">
+          <h3 class="post-title">
+            <a href="{{ path('post_show', {id: post.id}) }}">{{ post.title }}</a>
+          </h3>
+          <p class="post-meta">Por {{ post.user.username }} · {{ post.createdAt|date('d/m/Y') }}</p>
+          <p class="post-snippet">
+            {{ post.content|slice(0,150) }}{% if post.content|length > 150 %}...{% endif %}
+          </p>
+        </div>
+
+        <footer class="post-footer">
+          <span class="post-likes">♥ {{ post.likes|length }} Me gusta</span>
+          <div class="post-actions">
+            <a href="{{ path('post_show', {id: post.id}) }}" class="btn-action btn-view">Ver</a>
+          </div>
+        </footer>
+      </article>
+    {% else %}
+      <p class="no-posts">No hay publicaciones aún.</p>
+    {% endfor %}
+  </div>
+</section>
 {% endblock %}

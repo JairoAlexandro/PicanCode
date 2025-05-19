@@ -60,12 +60,8 @@ PicanCode es un proyecto en Symfony que incluye:
    ```bash
    cd html
    composer install
-   # Con Yarn
+   
    ```
-
-yarn install
-yarn encore dev
-
 # O con npm
 
 npm install
