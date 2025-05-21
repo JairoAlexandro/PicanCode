@@ -1,0 +1,124 @@
+{% extends 'gestion/base.html.twig' %}
+
+{% block title %}Gestión de Usuarios{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .filter-form {
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .filter-form input {
+      padding: 0.4rem 0.6rem;
+      border-radius: 0.3rem;
+      border: 1px solid #555;
+      background: #333;
+      color: #fff;
+    }
+    .btn-filter, .btn-action {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 0.3rem;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .btn-filter {
+      background: #27ae60;
+      color: #fff;
+    }
+    .btn-filter:hover {
+      background: #1e8449;
+    }
+    .btn-action {
+      background: #3498db;
+      color: #fff;
+    }
+    .btn-action:hover {
+      background: #217dbb;
+    }
+    .btn-delete {
+      background: #e74c3c;
+      margin-left: 0.3rem;
+    }
+    .btn-delete:hover {
+      background: #c0392b;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+    }
+    th, td {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid #444;
+      color: #eee;
+    }
+    th { background: #2c3e50; text-align: left; }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <h1>👥 Gestión de Usuarios</h1>
+
+  {# ————— Formulario de filtro ————— #}
+  <form class="filter-form" method="get">
+    <input
+      type="number"
+      name="id"
+      min="1"
+      placeholder="ID"
+      style="width:80px;"
+      value="{{ id_filter > 0 ? id_filter : '' }}"
+    />
+    <input
+      type="text"
+      name="username"
+      placeholder="Usuario contiene..."
+      value="{{ username_filter }}"
+    />
+    <button type="submit" class="btn-filter">Buscar</button>
+  </form>
+  {# ———————————————————————————————— #}
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Usuario</th>
+        <th>Email</th>
+        <th>Roles</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+        <tr>
+          <td>{{ u.id }}</td>
+          <td>{{ u.username }}</td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.roles|join(', ') }}</td>
+          <td>
+            <a href="{{ path('gestion_user_edit',{id:u.id}) }}"
+               class="btn-action">Editar</a>
+            <form action="{{ path('gestion_user_delete',{id:u.id}) }}"
+                  method="post" style="display:inline">
+              <input type="hidden" name="_token"
+                     value="{{ csrf_token('delete_user'~u.id) }}">
+              <button type="submit"
+                      class="btn-action btn-delete"
+                      onclick="return confirm('¿Eliminar usuario #{{ u.id }}?');">
+                Eliminar
+              </button>
+            </form>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="5" style="color:#aaa">No se encontraron usuarios.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

@@ -32,7 +32,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/gestion/login', name: 'gestion_login')]
     public function loginGestion(AuthenticationUtils $authUtils): Response
     {
-        if ($this->getUser()) {
+        if ($this->getUser() && $this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('gestion_panel');
         }
 
@@ -40,7 +40,7 @@ class SecurityController extends AbstractController
             'last_username' => $authUtils->getLastUsername(),
             'error'         => $authUtils->getLastAuthenticationError(),
         ]);
-    }
+}
 
     #[Route(path: '/gestion/logout', name: 'gestion_logout')]
     public function logoutGestion(): void

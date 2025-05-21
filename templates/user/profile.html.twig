@@ -130,6 +130,15 @@
     <div class="profile-header">
       <div class="profile-title">Perfil de {{ user.username }}</div>
       <div class="profile-info"><strong>Email:</strong> {{ user.email }}</div>
+
+      {# Aquí el conteo de seguidos y seguidores #}
+      <div class="profile-info">
+        <strong>Siguiendo:</strong> {{ user.following|length }}
+      </div>
+      <div class="profile-info">
+        <strong>Seguidores:</strong> {{ user.followers|length }}
+      </div>
+
       {% if user.avatar %}
         <img src="/uploads/avatars/{{ user.avatar }}"
              alt="Avatar de {{ user.username }}"

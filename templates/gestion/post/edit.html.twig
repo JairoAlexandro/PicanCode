@@ -1,0 +1,92 @@
+{% extends 'gestion/base.html.twig' %}
+
+{% block title %}Editar Post #{{ post.id }}{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .form-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: #2c2c2c;
+      padding: 2rem;
+      border-radius: 0.8rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .form-container h1 {
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      color: #fff;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.3rem;
+      color: #ddd;
+      font-weight: bold;
+    }
+    .form-group input[type="text"],
+    .form-group textarea,
+    .form-group input[type="file"] {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border: none;
+      border-radius: 0.4rem;
+      background: #3a3a3a;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    .btn-save {
+      display: block;
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-align: center;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <div class="form-container">
+    <h1>Editar Post #{{ post.id }}</h1>
+    {{ form_start(form, {attr: {'enctype':'multipart/form-data'}}) }}
+
+      <div class="form-group">
+        {{ form_label(form.title) }}
+        {{ form_widget(form.title, {attr: {placeholder: 'Título del post'}}) }}
+      </div>
+
+      <div class="form-group">
+        {{ form_label(form.content) }}
+        {{ form_widget(form.content, {attr: {placeholder: 'Contenido…'}}) }}
+      </div>
+
+      <div class="form-group">
+        {{ form_label(form.media) }}
+        {{ form_widget(form.media) }}
+      </div>
+
+      <button type="submit" class="btn-save">Guardar cambios</button>
+    {{ form_end(form) }}
+  </div>
+{% endblock %}
