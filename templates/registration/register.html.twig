@@ -20,7 +20,8 @@
   }
   .logo .red { color: #e74c3c; }
   .register-container label { display: block; margin-top: 1rem; font-weight: bold; }
-  .register-container input {
+  .register-container input,
+  .register-container textarea {
     width: 100%;
     padding: 0.75rem 1rem;
     border: none;
@@ -52,12 +53,16 @@
     Pican<span class="red">Code</span>
   </div>
 
-  {{ form_start(registrationForm) }}
+  {{ form_start(registrationForm, {
+      attr: { enctype: 'multipart/form-data' }
+  }) }}
 
     {{ form_row(registrationForm.username) }}
     {{ form_row(registrationForm.email) }}
     {{ form_row(registrationForm.plainPassword.first) }}
     {{ form_row(registrationForm.plainPassword.second) }}
+    {{ form_row(registrationForm.avatar) }}
+    {{ form_row(registrationForm.bio) }}
 
     <button type="submit">Sign up</button>
 

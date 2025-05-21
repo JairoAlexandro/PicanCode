@@ -189,16 +189,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // Si guardases datos sensibles temporalmente, los borrarías aquí.
+       
     }
 
-    // Métodos para las relaciones (posts, comments, likes, followers...)
-    // … (idénticos a los que ya tenías)
-
-    // Omito por brevedad add/remove de posts, comments, etc.
 
     public function getPosts(): Collection
     {
         return $this->posts;
+    }
+
+    /**
+     * @return Collection<int, \App\Entity\Follower>
+     */
+    public function getFollowing(): Collection
+    {
+        return $this->following;
+    }
+
+    /**
+     * @return Collection<int, \App\Entity\Follower>
+     */
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
     }
 }

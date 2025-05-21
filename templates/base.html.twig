@@ -82,7 +82,7 @@
           {% if app.user %}
             <a href="{{ path('post_new') }}">Nuevo Post</a>
             <a href="{{ path('user_profile', {'id': app.user.id}) }}">Mi Perfil</a>
-            <a href="{{ path('gestion_logout') }}">Cerrar Sesión</a>
+            <a href="{{ path('app_logout') }}">Cerrar Sesión</a>
           {% else %}
             <a href="{{ path('app_login') }}">Iniciar Sesión</a>
           {% endif %}

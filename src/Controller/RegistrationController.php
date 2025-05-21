@@ -49,7 +49,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // 1) Hasheamos la contraseña
+           
             $user->setPassword(
                 $passwordHasher->hashPassword(
                     $user,
@@ -57,37 +57,23 @@ class RegistrationController extends AbstractController
                 )
             );
 
-            // 2) Avatar (si la aplicación lo usará)
             /** @var UploadedFile|null $avatarFile */
             $avatarFile = $form->get('avatar')->getData();
-            if ($avatarFile) {
+            if ($avatarFile instanceof UploadedFile) {
                 $newFilename = uniqid() . '.' . $avatarFile->guessExtension();
                 try {
                     $avatarFile->move($this->avatarsDir, $newFilename);
                     $user->setAvatar($newFilename);
                 } catch (FileException $e) {
-                    if ($request->isXmlHttpRequest()) {
-                        return new JsonResponse([
-                            'success' => false,
-                            'message' => 'Error al subir el avatar'
-                        ], Response::HTTP_BAD_REQUEST);
-                    }
+                    $this->addFlash('error', 'No se pudo subir el avatar.');
                 }
             }
 
-            // 3) Bio (si tu form lo mapea directamente, no hace falta código extra)
-
-            // 4) Actualiza el timestamp de "updatedAt"
             $user->setUpdatedAt(new \DateTime());
-
-            // Marcar como verificado por defecto (desarrollo)
             $user->setIsVerified(true);
-
-            // 5) Persistimos el usuario
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // 6) Enviamos email de verificación
             $this->emailVerifier->sendEmailConfirmation(
                 'app_verify_email',
                 $user,
@@ -102,7 +88,6 @@ class RegistrationController extends AbstractController
                 return new JsonResponse(['success' => true]);
             }
 
-            // 7) Auto-login y redirección
             return $userAuthenticator->authenticateUser(
                 $user,
                 $authenticator,
@@ -137,12 +122,10 @@ class RegistrationController extends AbstractController
             $this->addFlash('verify_email_error', $translator->trans(
                 $e->getReason(), [], 'VerifyEmailBundle'
             ));
-
             return $this->redirectToRoute('app_register');
         }
 
         $this->addFlash('success', 'Tu email ha sido verificado correctamente.');
-
         return $this->redirectToRoute('post_index');
     }
 }

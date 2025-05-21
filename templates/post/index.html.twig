@@ -99,9 +99,15 @@
 
         <div class="post-content">
           <h3 class="post-title">
-            <a href="{{ path('post_show', {id: post.id}) }}">{{ post.title }}</a>
+            <a href="{{ path('post_show', { id: post.id }) }}">{{ post.title }}</a>
           </h3>
-          <p class="post-meta">Por {{ post.user.username }} · {{ post.createdAt|date('d/m/Y') }}</p>
+          <p class="post-meta">
+            Por
+            <a href="{{ path('user_profile', { id: post.user.id }) }}">
+              {{ post.user.username }}
+            </a>
+            · {{ post.createdAt|date('d/m/Y') }}
+          </p>
           <p class="post-snippet">
             {{ post.content|slice(0,150) }}{% if post.content|length > 150 %}...{% endif %}
           </p>
@@ -110,7 +116,7 @@
         <footer class="post-footer">
           <span class="post-likes">♥ {{ post.likes|length }} Me gusta</span>
           <div class="post-actions">
-            <a href="{{ path('post_show', {id: post.id}) }}" class="btn-action btn-view">Ver</a>
+            <a href="{{ path('post_show', { id: post.id }) }}" class="btn-action btn-view">Ver</a>
           </div>
         </footer>
       </article>
