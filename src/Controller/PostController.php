@@ -16,10 +16,23 @@ use App\Form\CommentType;
 class PostController extends AbstractController
 {
     #[Route('', name: 'post_index', methods: ['GET'])]
-    public function index(PostRepository $repo): Response
+    public function index(Request $request, PostRepository $repo): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+    }
+
+        $view = $request->query->get('view', 'recent');
+
+        if ($view === 'following') {
+            $posts = $repo->findByFollowing($this->getUser());
+        } else {
+            $posts = $repo->findRecent();
+        }
+
         return $this->render('post/index.html.twig', [
-            'posts' => $repo->findBy([], ['createdAt' => 'DESC']),
+            'posts' => $posts,
+            'view'  => $view,
         ]);
     }
 

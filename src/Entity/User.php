@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use App\Entity\Post;
+use App\Entity\Comment;
+use App\Entity\Like;
+use App\Entity\Follower;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -64,13 +68,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->posts      = new ArrayCollection();
-        $this->comments   = new ArrayCollection();
-        $this->likes      = new ArrayCollection();
-        $this->followers  = new ArrayCollection();
-        $this->following  = new ArrayCollection();
-        $this->createdAt  = new \DateTime();
-        $this->updatedAt  = new \DateTime();
+        $this->posts     = new ArrayCollection();
+        $this->comments  = new ArrayCollection();
+        $this->likes     = new ArrayCollection();
+        $this->followers = new ArrayCollection();
+        $this->following = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -78,13 +82,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    // Para Symfony 5.3+:
+    // Symfony 5.3+:
     public function getUserIdentifier(): string
     {
         return $this->username;
     }
 
-    // Por compatibilidad con versiones antiguas:
+    // Legacy support:
     public function getUsername(): string
     {
         return $this->username;
@@ -189,28 +193,46 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-       
+        // nothing to do
     }
 
-
+    /**
+     * @return Collection<int, Post>
+     */
     public function getPosts(): Collection
     {
         return $this->posts;
     }
 
     /**
-     * @return Collection<int, \App\Entity\Follower>
+     * @return Collection<int, Comment>
      */
-    public function getFollowing(): Collection
+    public function getComments(): Collection
     {
-        return $this->following;
+        return $this->comments;
     }
 
     /**
-     * @return Collection<int, \App\Entity\Follower>
+     * @return Collection<int, Like>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    /**
+     * @return Collection<int, Follower>
      */
     public function getFollowers(): Collection
     {
         return $this->followers;
+    }
+
+    /**
+     * @return Collection<int, Follower>
+     */
+    public function getFollowing(): Collection
+    {
+        return $this->following;
     }
 }

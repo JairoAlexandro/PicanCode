@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Post;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,8 +15,9 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * Ejemplo de método personalizado: devuelve los últimos $limit posts.
+     * Devuelve los últimos $limit posts publicados, ordenados por fecha descendente.
      *
+     * @param int $limit
      * @return Post[]
      */
     public function findLatest(int $limit = 10): array
@@ -28,4 +30,47 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * Devuelve los posts más recientes.
+     *
+     * @param int $limit
+     * @return Post[]
+     */
+    public function findRecent(int $limit = 50): array
+    {
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * Devuelve los posts de los usuarios a los que sigue el usuario dado.
+     *
+     * @param User $user
+     * @param int  $limit
+     * @return Post[]
+     */
+    public function findByFollowing(User $user, int $limit = 50): array
+    {
+        // Obtener IDs de usuarios seguidos
+        $followingIds = $user->getFollowing()
+            ->map(fn($f) => $f->getFollowed()->getId())
+            ->toArray();
+
+        if (empty($followingIds)) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.user IN (:ids)')
+            ->setParameter('ids', $followingIds)
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

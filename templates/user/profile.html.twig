@@ -1,3 +1,4 @@
+{# templates/user/profile.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Perfil de {{ user.username }}{% endblock %}
@@ -15,6 +16,7 @@
     }
     .profile-header {
       margin-bottom: 2rem;
+      text-align: center;
     }
     .profile-title {
       font-size: 2.2rem;
@@ -27,18 +29,25 @@
       font-size: 1.1rem;
       margin-bottom: 0.5rem;
     }
-    .profile-avatar {
-      max-width: 120px;
+    .profile-avatar, .default-avatar {
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
-      margin-bottom: 1rem;
+      margin: 0 auto 1rem;
       box-shadow: 0 2px 8px #0004;
+      object-fit: cover;
     }
-    .profile-bio {
+    .default-avatar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #444;
       color: #aaa;
-      margin-bottom: 1rem;
+      font-size: 3rem;
     }
     .follow-form {
       margin: 1rem 0;
+      text-align: center;
     }
     .follow-form button {
       padding: 0.5rem 1rem;
@@ -55,18 +64,20 @@
     .profile-divider {
       border: none;
       border-top: 2px solid #fff2;
-      margin: 2rem 0 1.5rem 0;
+      margin: 2rem 0 1.5rem;
     }
     .posts-title {
       color: #fff;
       font-size: 1.4rem;
       font-weight: bold;
       margin-bottom: 1.5rem;
+      text-align: center;
     }
     .posts-list {
       display: flex;
       flex-wrap: wrap;
       gap: 2rem;
+      justify-content: center;
     }
     .post-card {
       background: #232323;
@@ -119,7 +130,7 @@
   <div class="profile-container">
 
     {% set is_following = false %}
-    {% if app.user and app.user != user %}
+    {% if app.user and app.user.id != user.id %}
       {% for f in app.user.following %}
         {% if f.followed.id == user.id %}
           {% set is_following = true %}
@@ -128,45 +139,47 @@
     {% endif %}
 
     <div class="profile-header">
-      <div class="profile-title">Perfil de {{ user.username }}</div>
+      <div class="profile-title">{{ user.username }}</div>
       <div class="profile-info"><strong>Email:</strong> {{ user.email }}</div>
-
-      {# Aquí el conteo de seguidos y seguidores #}
-      <div class="profile-info">
-        <strong>Siguiendo:</strong> {{ user.following|length }}
-      </div>
-      <div class="profile-info">
-        <strong>Seguidores:</strong> {{ user.followers|length }}
-      </div>
+      <div class="profile-info"><strong>Siguiendo:</strong> {{ user.following|length }}</div>
+      <div class="profile-info"><strong>Seguidores:</strong> {{ user.followers|length }}</div>
 
       {% if user.avatar %}
         <img src="/uploads/avatars/{{ user.avatar }}"
              alt="Avatar de {{ user.username }}"
              class="profile-avatar">
+      {% else %}
+        <div class="default-avatar">
+          <i class="fas fa-user"></i>
+        </div>
       {% endif %}
+
+      {% if app.user and app.user.id == user.id %}
+        <a href="{{ path('user_edit_profile', {id: user.id}) }}"
+           class="btn btn-secondary"
+           style="display:block; text-align:center; margin:1rem auto;">
+          🖉 Editar perfil
+        </a>
+      {% endif %}
+
       {% if user.bio %}
         <div class="profile-bio"><strong>Bio:</strong> {{ user.bio }}</div>
       {% endif %}
-      <div class="profile-info">
-        <strong>Miembro desde:</strong> {{ user.createdAt|date('d/m/Y') }}
-      </div>
+      <div class="profile-info"><strong>Miembro desde:</strong> {{ user.createdAt|date('d/m/Y') }}</div>
 
-      {% if app.user and app.user != user %}
-        <form action="{{ path('user_follow', { id: user.id }) }}"
+      {% if app.user and app.user.id != user.id %}
+        <form action="{{ path('user_follow', {id: user.id}) }}"
               method="post"
               class="follow-form"
               onsubmit="{% if is_following %}return confirm('¿Dejar de seguir a {{ user.username }}?');{% endif %}">
           <input type="hidden"
                  name="_token"
                  value="{{ csrf_token((is_following ? 'unfollow' : 'follow') ~ user.id) }}">
-          {% if is_following %}
-            <button type="submit" class="btn-unfollow">Siguiendo</button>
-          {% else %}
-            <button type="submit" class="btn-view">Seguir</button>
-          {% endif %}
+          <button type="submit" class="{{ is_following ? 'btn-unfollow' : 'btn-view' }}">
+            {{ is_following ? 'Siguiendo' : 'Seguir' }}
+          </button>
         </form>
       {% endif %}
-
     </div>
 
     <hr class="profile-divider">
@@ -179,13 +192,10 @@
           {% if post.media %}
             <img src="/uploads/posts/{{ post.media }}" alt="Imagen del post">
           {% endif %}
-          <p>
-            {{ post.content|slice(0,100) }}
-            {% if post.content|length > 100 %}...{% endif %}
-          </p>
+          <p>{{ post.content|slice(0,100) }}{% if post.content|length > 100 %}...{% endif %}</p>
           <div class="post-likes">♥ {{ post.likes|length }} Me gusta</div>
           <div class="post-actions">
-            <a href="{{ path('post_show', { id: post.id }) }}"
+            <a href="{{ path('post_show', {id: post.id}) }}"
                class="btn-action btn-view">Ver</a>
           </div>
         </div>

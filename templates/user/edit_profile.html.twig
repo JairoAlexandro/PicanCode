@@ -1,0 +1,91 @@
+{# templates/user/edit_profile.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar perfil – {{ user.username }}{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .edit-container {
+      max-width: 600px;
+      margin: 3rem auto;
+      background: #232323;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px #0004;
+      color: #fff;
+    }
+    .edit-container h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .avatar-preview {
+      display: block;
+      margin: 0 auto 1rem;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 2px 6px #0004;
+    }
+    .default-avatar {
+      width: 100px;
+      height: 100px;
+      background: #444;
+      color: #aaa;
+      font-size: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px #0004;
+    }
+    .edit-container textarea, .edit-container input[type="file"] {
+      width: 100%;
+      padding: 0.75rem;
+      background: #3b3b3b;
+      border: none;
+      border-radius: 0.5rem;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    .edit-container input[type="file"] {
+      cursor: pointer;
+    }
+    .edit-container button {
+      width: 100%;
+      padding: 0.75rem;
+      background: #27ae60;
+      border: none;
+      border-radius: 0.5rem;
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .edit-container button:hover {
+      background: #1e8449;
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <div class="edit-container">
+    <h2>Editar perfil de {{ user.username }}</h2>
+
+    {% if user.avatar %}
+      <img src="/uploads/avatars/{{ user.avatar }}" class="avatar-preview">
+    {% else %}
+      <div class="default-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+    {% endif %}
+
+    {{ form_start(form, {attr: {enctype: 'multipart/form-data'}}) }}
+        {{ form_row(form.bio) }}
+        {{ form_row(form.avatar) }}
+        <button type="submit">Guardar cambios</button>
+    {{ form_end(form) }}
+  </div>
+{% endblock %}
