@@ -1,71 +1,89 @@
+{# templates/security/register.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}PicanCode – Register{% endblock %}
+{% block title %}Register – PicanCode{% endblock %}
 
 {% block stylesheets %}
-<style>
-  body { background: #1b1b1b; }
-  .register-container {
-    max-width: 400px;
-    margin: 2rem auto;
-    background: #2b2b2b;
-    padding: 2rem;
-    border-radius: 1rem;
-    color: #fff;
-  }
-  .logo {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .logo .red { color: #e74c3c; }
-  .register-container label { display: block; margin-top: 1rem; font-weight: bold; }
-  .register-container input,
-  .register-container textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: none;
-    border-radius: 2rem;
-    background: #3b3b3b;
-    color: #fff;
-    margin-top: 0.5rem;
-  }
-  .register-container button {
-    width: 100%;
-    padding: 0.75rem;
-    margin-top: 1.5rem;
-    background: #e74c3c;
-    border: none;
-    border-radius: 2rem;
-    color: white;
-    font-size: 1.1rem;
-    cursor: pointer;
-  }
-  .register-container button:hover {
-    background: #c0392b;
-  }
-</style>
+  {{ parent() }}
 {% endblock %}
 
 {% block body %}
-<div class="register-container">
-  <div class="logo">
-    Pican<span class="red">Code</span>
+<div class="flex flex-col h-full overflow-hidden bg-[#1C1C1C]">
+
+  <div class="flex-grow flex items-center justify-center px-4">
+    <div class="w-full max-w-md bg-gray-800 p-8 rounded-2xl shadow-lg space-y-6">
+      <h1 class="text-4xl font-extrabold text-center">
+        Pican<span class="text-red-500">Code</span>
+      </h1>
+
+      {{ form_start(registrationForm, { attr: { enctype: 'multipart/form-data', class: 'space-y-4' } }) }}
+
+        <div>
+          {{ form_label(registrationForm.username, 'Usuario', { label_attr: { class: 'block text-sm font-medium mb-1 text-white' } }) }}
+          {{ form_widget(registrationForm.username, { attr: {
+            class: 'w-full px-4 py-2 bg-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500'
+          } }) }}
+          {{ form_errors(registrationForm.username) }}
+        </div>
+
+        <div>
+          {{ form_label(registrationForm.email, 'Email', { label_attr: { class: 'block text-sm font-medium mb-1 text-white' } }) }}
+          {{ form_widget(registrationForm.email, { attr: {
+            class: 'w-full px-4 py-2 bg-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500'
+          } }) }}
+          {{ form_errors(registrationForm.email) }}
+        </div>
+
+        <div>
+          {{ form_label(registrationForm.plainPassword.first, 'Contraseña', { label_attr: { class: 'block text-sm font-medium mb-1 text-white' } }) }}
+          {{ form_widget(registrationForm.plainPassword.first, { attr: {
+            class: 'w-full px-4 py-2 bg-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500'
+          } }) }}
+          {{ form_errors(registrationForm.plainPassword.first) }}
+        </div>
+
+        <div>
+          {{ form_label(registrationForm.plainPassword.second, 'Repite Contraseña', { label_attr: { class: 'block text-sm font-medium mb-1 text-white' } }) }}
+          {{ form_widget(registrationForm.plainPassword.second, { attr: {
+            class: 'w-full px-4 py-2 bg-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500'
+          } }) }}
+          {{ form_errors(registrationForm.plainPassword.second) }}
+        </div>
+
+        <div>
+          {{ form_label(registrationForm.avatar, 'Avatar (opcional)', { label_attr: { class: 'block text-sm font-medium mb-1 text-white' } }) }}
+          {{ form_widget(registrationForm.avatar, { attr: {
+            class: 'w-full text-sm text-gray-300 file:bg-gray-700 file:px-4 file:py-2 file:rounded-full file:border-0 file:text-white file:cursor-pointer hover:file:bg-gray-600'
+          } }) }}
+          {{ form_errors(registrationForm.avatar) }}
+        </div>
+
+        <div>
+          {{ form_label(registrationForm.bio, 'Biografía', { label_attr: { class: 'block text-sm font-medium mb-1 text-white' } }) }}
+          {{ form_widget(registrationForm.bio, { attr: {
+            class: 'w-full px-4 py-2 bg-gray-700 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500',
+            rows: 4,
+            placeholder: 'Cuéntanos algo sobre ti…'
+          } }) }}
+          {{ form_errors(registrationForm.bio) }}
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3 bg-red-500 hover:bg-red-600 rounded-full font-semibold text-lg transition"
+        >
+          Registrarse
+        </button>
+
+      {{ form_end(registrationForm) }}
+
+      <p class="text-center text-sm text-gray-400">
+        ¿Ya tienes cuenta?
+        <a href="{{ path('app_login') }}" class="text-red-500 hover:underline">
+          Inicia Sesión
+        </a>
+      </p>
+    </div>
   </div>
-
-  {{ form_start(registrationForm, {
-      attr: { enctype: 'multipart/form-data' }
-  }) }}
-
-    {{ form_row(registrationForm.username) }}
-    {{ form_row(registrationForm.email) }}
-    {{ form_row(registrationForm.plainPassword.first) }}
-    {{ form_row(registrationForm.plainPassword.second) }}
-    {{ form_row(registrationForm.avatar) }}
-    {{ form_row(registrationForm.bio) }}
-
-    <button type="submit">Sign up</button>
-
-  {{ form_end(registrationForm) }}
 </div>
 {% endblock %}

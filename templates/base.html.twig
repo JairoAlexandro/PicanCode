@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}PicanCode{% endblock %}</title>
 
     {% block stylesheets %}
@@ -10,26 +10,38 @@
     {% endblock %}
   </head>
 
-  <body class="bg-[#1C1C1C] text-white font-sans antialiased">
-    <nav class="bg-[#000000] shadow-md">
+  <body class="min-h-screen bg-[#1C1C1C] text-white font-sans antialiased">
+    <nav class="bg-[#000000] shadow-lg">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
-          <a href="{{ path('post_index') }}" class="text-2xl font-bold">
+          <a href="{{ path('post_index') }}" class="text-3xl font-extrabold tracking-tight">
             Pican<span class="text-red-500">Code</span>
           </a>
-          <div class="space-x-4">
+          <div class="flex items-center space-x-3">
             {% if app.user %}
-              <a href="{{ path('post_new') }}" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 transition">
+              <a
+                href="{{ path('post_new') }}"
+                class="inline-flex items-center px-5 py-2 bg-gray-800 hover:bg-gray-700 transition text-sm font-medium rounded-full shadow-md"
+              >
                 Nuevo Post
               </a>
-              <a href="{{ path('user_profile', {'id': app.user.id}) }}" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 transition">
+              <a
+                href="{{ path('user_profile', {'id': app.user.id}) }}"
+                class="inline-flex items-center px-5 py-2 bg-gray-800 hover:bg-gray-700 transition text-sm font-medium rounded-full shadow-md"
+              >
                 Mi Perfil
               </a>
-              <a href="{{ path('app_logout') }}" class="px-4 py-2 rounded-full bg-red-600 hover:bg-red-700 transition">
+              <a
+                href="{{ path('app_logout') }}"
+                class="inline-flex items-center px-5 py-2 bg-red-600 hover:bg-red-700 transition text-sm font-medium rounded-full shadow-md"
+              >
                 Cerrar Sesión
               </a>
             {% else %}
-              <a href="{{ path('app_login') }}" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 transition">
+              <a
+                href="{{ path('app_login') }}"
+                class="inline-flex items-center px-5 py-2 bg-gray-800 hover:bg-gray-700 transition text-sm font-medium rounded-full shadow-md"
+              >
                 Iniciar Sesión
               </a>
             {% endif %}
@@ -38,14 +50,16 @@
       </div>
     </nav>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="space-y-4">
         {% for label, messages in app.flashes %}
           {% for message in messages %}
-            <div class="p-4 rounded-md text-sm
-              {% if label == 'success' %}bg-green-600 bg-opacity-10 text-green-400{% endif %}
-              {% if label == 'error'   %}bg-red-600 bg-opacity-10 text-red-400{% endif %}
-              {% if label == 'warning' %}bg-yellow-500 bg-opacity-10 text-yellow-400{% endif %}">
+            <div
+              class="p-4 rounded-md text-sm
+                {% if label == 'success' %}bg-green-500/10 text-green-300{% endif %}
+                {% if label == 'error'   %}bg-red-500/10 text-red-300{% endif %}
+                {% if label == 'warning' %}bg-yellow-400/10 text-yellow-300{% endif %}"
+            >
               {{ message }}
             </div>
           {% endfor %}
@@ -53,7 +67,7 @@
       </div>
 
       {% block body %}{% endblock %}
-    </div>
+    </main>
 
     {% block javascripts %}
       {{ encore_entry_script_tags('app') }}
