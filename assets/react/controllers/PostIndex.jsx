@@ -34,7 +34,7 @@ export default function PostIndex({ apiUrl, initialData }) {
           posts.map(post => (
             <article
               key={post.id}
-              className="bg-gray-800 p-6 rounded-lg max-w-sm flex flex-col shadow-md"
+              className="bg-gray-900 p-6 rounded-lg max-w-sm flex flex-col shadow-md"
             >
               {post.media && (
                 <div className="mb-4">
@@ -48,24 +48,21 @@ export default function PostIndex({ apiUrl, initialData }) {
 
               <div className="flex-1">
                 <h3 className="text-white text-xl font-semibold mb-2">
-                  <a
-                    href={`/posts/${post.id}`}
-                    className="hover:underline"
-                  >
+                  <a href={`/posts/${post.id}`} className="hover:underline">
                     {post.title}
                   </a>
                 </h3>
-                <p className="text-gray-400 text-sm mb-2">
+                <p className="text-gray-500 text-sm mb-2">
                   Por{' '}
                   <a
                     href={`/user/${post.authorId}`}
-                    className="text-blue-400 hover:underline"
+                    className="text-gray-300 hover:underline"
                   >
                     {post.author}
                   </a>{' '}
                   · {formatDate(post.createdAt)}
                 </p>
-                <p className="text-gray-200 mb-4">
+                <p className="text-gray-400 mb-4">
                   {post.snippet}
                 </p>
               </div>
@@ -84,7 +81,7 @@ export default function PostIndex({ apiUrl, initialData }) {
             </article>
           ))
         ) : (
-          <p className="text-gray-400 text-center w-full">
+          <p className="text-gray-500 text-center w-full">
             No hay publicaciones para mostrar.
           </p>
         )}

@@ -1,105 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PicanCode{% endblock %}</title>
-
-    <style>
-      body { 
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        background: #1b1b1b;
-        color: #fff;
-      }
-      nav {
-        background: #2b2b2b;
-        padding: 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      }
-      nav .nav-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      nav .logo {
-        font-size: 1.5rem;
-        font-weight: bold;
-        text-decoration: none;
-        color: #fff;
-      }
-      nav .logo .red { color: #e74c3c; }
-      nav .nav-links {
-        display: flex;
-        gap: 1rem;
-      }
-      nav .nav-links a {
-        color: #fff;
-        text-decoration: none;
-        padding: 0.5rem 1rem;
-        border-radius: 2rem;
-        transition: background 0.3s;
-      }
-      nav .nav-links a:hover {
-        background: #3b3b3b;
-      }
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-      }
-      .flash-messages {
-        margin-bottom: 1rem;
-      }
-      .flash-message {
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin-bottom: 0.5rem;
-      }
-      .flash-success {
-        background: rgba(46, 204, 113, 0.1);
-        color: #2ecc71;
-      }
-      .flash-error {
-        background: rgba(231, 76, 60, 0.1);
-        color: #e74c3c;
-      }
-      .flash-warning {
-        background: rgba(241, 196, 15, 0.1);
-        color: #f1c40f;
-      }
-    </style>
 
     {% block stylesheets %}
       {{ encore_entry_link_tags('app') }}
     {% endblock %}
   </head>
 
-  <body>
-    <nav>
-      <div class="nav-container">
-        <a href="{{ path('post_index') }}" class="logo">
-          Pican<span class="red">Code</span>
-        </a>
-        <div class="nav-links">
-          {% if app.user %}
-            <a href="{{ path('post_new') }}">Nuevo Post</a>
-            <a href="{{ path('user_profile', {'id': app.user.id}) }}">Mi Perfil</a>
-            <a href="{{ path('app_logout') }}">Cerrar Sesión</a>
-          {% else %}
-            <a href="{{ path('app_login') }}">Iniciar Sesión</a>
-          {% endif %}
+  <body class="bg-[#1C1C1C] text-white font-sans antialiased">
+    <nav class="bg-[#000000] shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <a href="{{ path('post_index') }}" class="text-2xl font-bold">
+            Pican<span class="text-red-500">Code</span>
+          </a>
+          <div class="space-x-4">
+            {% if app.user %}
+              <a href="{{ path('post_new') }}" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 transition">
+                Nuevo Post
+              </a>
+              <a href="{{ path('user_profile', {'id': app.user.id}) }}" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 transition">
+                Mi Perfil
+              </a>
+              <a href="{{ path('app_logout') }}" class="px-4 py-2 rounded-full bg-red-600 hover:bg-red-700 transition">
+                Cerrar Sesión
+              </a>
+            {% else %}
+              <a href="{{ path('app_login') }}" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 transition">
+                Iniciar Sesión
+              </a>
+            {% endif %}
+          </div>
         </div>
       </div>
     </nav>
 
-    <div class="container">
-      <div class="flash-messages">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="space-y-4">
         {% for label, messages in app.flashes %}
           {% for message in messages %}
-            <div class="flash-message flash-{{ label }}">
+            <div class="p-4 rounded-md text-sm
+              {% if label == 'success' %}bg-green-600 bg-opacity-10 text-green-400{% endif %}
+              {% if label == 'error'   %}bg-red-600 bg-opacity-10 text-red-400{% endif %}
+              {% if label == 'warning' %}bg-yellow-500 bg-opacity-10 text-yellow-400{% endif %}">
               {{ message }}
             </div>
           {% endfor %}
@@ -109,8 +55,8 @@
       {% block body %}{% endblock %}
     </div>
 
-    {{ encore_entry_script_tags('app') }}
-
-    {% block javascripts %}{% endblock %}
+    {% block javascripts %}
+      {{ encore_entry_script_tags('app') }}
+    {% endblock %}
   </body>
 </html>
