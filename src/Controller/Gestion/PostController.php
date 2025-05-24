@@ -45,7 +45,6 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            // Si tu PostType maneja un FileType 'media' como unmapped:
             $media = $form->get('media')->getData();
             if ($media) {
                 $filename = uniqid().'.'.$media->guessExtension();

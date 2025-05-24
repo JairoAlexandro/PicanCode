@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
+namespace App\Controller;
+
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{Request, Response, JsonResponse};
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\CommentType;
 
@@ -20,19 +21,36 @@ class PostController extends AbstractController
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
-    }
+        }
 
         $view = $request->query->get('view', 'recent');
+        $posts = $view === 'following'
+            ? $repo->findByFollowing($this->getUser())
+            : $repo->findRecent()
+        ;
 
-        if ($view === 'following') {
-            $posts = $repo->findByFollowing($this->getUser());
-        } else {
-            $posts = $repo->findRecent();
+        $mapped = array_map(fn($p) => [
+            'id'        => $p->getId(),
+            'title'     => $p->getTitle(),
+            'snippet'   => mb_substr($p->getContent(), 0, 150)
+                          . (mb_strlen($p->getContent()) > 150 ? '…' : ''),
+            'media'     => $p->getMedia(),
+            'author'    => $p->getUser()->getUsername(),
+            'authorId'  => $p->getUser()->getId(),
+            'createdAt' => $p->getCreatedAt()->format('Y-m-d'),
+            'likes'     => count($p->getLikes()),
+        ], $posts);
+
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse([
+                'view'  => $view,
+                'posts' => $mapped,
+            ]);
         }
 
         return $this->render('post/index.html.twig', [
-            'posts' => $posts,
-            'view'  => $view,
+            'data'   => ['view' => $view, 'posts' => $mapped],
+            'apiUrl' => $this->generateUrl('post_index'),
         ]);
     }
 

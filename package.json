@@ -7,7 +7,10 @@
   "devDependencies": {
     "@babel/preset-react": "^7.27.1",
     "@hotwired/stimulus": "^3.0.0",
+    "@hotwired/turbo": "^7.1.1 || ^8.0",
+    "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
     "@symfony/webpack-encore": "^2.0.0",
+    "autoprefixer": "^10.4.21",
     "core-js": "^3.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -19,7 +22,12 @@
     "webpack-notifier": "^1.15.0"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@symfony/stimulus-bridge": "^4.0.1",
-    "@symfony/ux-react": "file:vendor/symfony/ux-react/assets"
+    "@symfony/ux-react": "file:vendor/symfony/ux-react/assets",
+    "@tailwindcss/postcss": "^4.1.7",
+    "postcss": "^8.5.3",
+    "postcss-loader": "^8.1.1",
+    "tailwindcss": "^4.1.7"
   }
 }

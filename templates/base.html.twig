@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PicanCode{% endblock %}</title>
+
     <style>
       body { 
         margin: 0;
@@ -70,8 +71,12 @@
         color: #f1c40f;
       }
     </style>
-    {% block stylesheets %}{% endblock %}
+
+    {% block stylesheets %}
+      {{ encore_entry_link_tags('app') }}
+    {% endblock %}
   </head>
+
   <body>
     <nav>
       <div class="nav-container">
@@ -103,5 +108,9 @@
 
       {% block body %}{% endblock %}
     </div>
+
+    {{ encore_entry_script_tags('app') }}
+
+    {% block javascripts %}{% endblock %}
   </body>
 </html>
