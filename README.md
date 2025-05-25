@@ -63,7 +63,6 @@ PicanCode es un proyecto en Symfony que incluye:
    ```
 
    ```bash
-   # O con npm
    npm install
    npm run dev
 
