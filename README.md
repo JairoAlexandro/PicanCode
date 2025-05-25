@@ -166,11 +166,27 @@ En el .env-example esta todo lo necesario para que creeis el .env, simplemente c
 
 ## Test
 
-1. Para ejecutar los test del back, tienes que entrar en el shell de devilbox, estar en la ruta /shared/httpd/PicanCode/html y ejecutar el siguiente comando:
+1. Para ejecutar los test del back, lo primero es tener una copia de la base de datos llamada "picancode_test" la cual la puedes crear con los siguientes comandos:
+
+   ```bash
+   # crea la BD de test
+   php bin/console doctrine:database:create --env=test
+
+   # las migraciones
+   php bin/console doctrine:migrations:migrate --env=test
+
+   # En caso de que las migraciones te den fallo, usa este comando
+   php bin/console doctrine:schema:update --force --env=test
+   ```
+
+ Despues tienes que entrar en el shell de devilbox, estar en la ruta /shared/httpd/PicanCode/html y ejecutar el siguiente comando:
 
    ```bash
    ./vendor/bin/phpunit --testdox
    ```
+
+ Puede que tengas que retocar el .env.test para la base de datos de los test, pero como esta ya puesto deberia bastar.
+ 
 2. Para ejecutar los test del front, tienes que entrar en el shell de devilbox y estar en la ruta /shared/httpd/PicanCode/html/assets y ejecutar el siguiente comando:
 
    ```bash
