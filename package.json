@@ -2,7 +2,10 @@
   "private": true,
   "scripts": {
     "dev": "encore dev --watch",
-    "build": "encore production"
+    "build": "encore production",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.27.1",
@@ -10,13 +13,20 @@
     "@hotwired/turbo": "^7.1.1 || ^8.0",
     "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
     "@symfony/webpack-encore": "^2.0.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^4.5.0",
     "autoprefixer": "^10.4.21",
     "core-js": "^3.0.0",
+    "jsdom": "^26.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "regenerator-runtime": "^0.13.0",
     "sass": "^1.32.0",
     "sass-loader": "^12.0.0",
+    "vite": "^6.3.5",
+    "vitest": "^3.1.4",
     "webpack": "^5.0.0",
     "webpack-cli": "^4.0.0",
     "webpack-notifier": "^1.15.0"
