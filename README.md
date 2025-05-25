@@ -60,21 +60,21 @@ PicanCode es un proyecto en Symfony que incluye:
    ```bash
    cd html
    composer install
-   
    ```
-# O con npm
 
-npm install
-npm run dev
+   ```bash
+   # O con npm
+   npm install
+   npm run dev
 
-````
+   ````
 
 6. **Crear esquema de base de datos y cargar fixtures**  
-```bash
-php bin/console doctrine:database:create
-php bin/console doctrine:migrations:migrate
-php bin/console doctrine:fixtures:load
-````
+   ```bash
+   php bin/console doctrine:database:create
+   php bin/console doctrine:migrations:migrate
+   php bin/console doctrine:fixtures:load
+   ````
 
 7. **Crear enlace simbólico para Devilbox**
 
@@ -186,7 +186,7 @@ En el .env-example esta todo lo necesario para que creeis el .env, simplemente c
    ```
 
  Puede que tengas que retocar el .env.test para la base de datos de los test, pero como esta ya puesto deberia bastar.
- 
+
 2. Para ejecutar los test del front, tienes que entrar en el shell de devilbox y estar en la ruta /shared/httpd/PicanCode/html/assets y ejecutar el siguiente comando:
 
    ```bash
