@@ -164,6 +164,19 @@ Haz doble clic sobre cualquier tabla para ver sus datos o haz clic derecho y sel
 ## Funcionar el proyecto
 En el .env-example esta todo lo necesario para que creeis el .env, simplemente copiad y pegadlo, en en database url, en la parte de "root:" root puede ser vuestro usuario y despues de los : ahí iría vuestra contraseña, pero por defecto se usa root: y sin contraseña.
 
+## Test
+
+1. Para ejecutar los test del back, tienes que entrar en el shell de devilbox, estar en la ruta /shared/httpd/PicanCode/html y ejecutar el siguiente comando:
+
+   ```bash
+   ./vendor/bin/phpunit --testdox
+   ```
+2. Para ejecutar los test del front, tienes que entrar en el shell de devilbox y estar en la ruta /shared/httpd/PicanCode/html/assets y ejecutar el siguiente comando:
+
+   ```bash
+   npm run test
+   ```
+
 ## Licencia
 
 Licencia MIT. ¡A tope con el código! 🚀
