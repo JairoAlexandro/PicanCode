@@ -1,99 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Crear Post{% endblock %}
-
-{% block stylesheets %}
-{{ parent() }}
-<style>
-.new-post-container {
-  max-width: 500px;
-  margin: 3rem auto;
-  background: #232323;
-  padding: 2.5rem 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px #0002;
-}
-.new-post-title {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #fff;
-  margin-bottom: 2rem;
-  text-align: center;
-}
-.form-group {
-  margin-bottom: 1.5rem;
-}
-.form-group label {
-  color: #fff;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  display: block;
-}
-.form-control, .form-group textarea, .form-group input[type="file"] {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 0.4rem;
-  border: 1px solid #3b3b3b;
-  background: #1b1b1b;
-  color: #fff;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-}
-.form-group input[type="checkbox"] {
-  width: auto;
-  margin-right: 0.5rem;
-}
-.btn-submit {
-  background: #e74c3c;
-  color: #fff;
-  border: none;
-  border-radius: 0.4rem;
-  padding: 0.7rem 2rem;
-  font-weight: bold;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  display: block;
-  margin: 1.5rem auto 0 auto;
-}
-.btn-submit:hover {
-  background: #c0392b;
-}
-.back-link {
-  display: block;
-  text-align: center;
-  margin-top: 2rem;
-  color: #e74c3c;
-  text-decoration: none;
-  font-weight: bold;
-}
-.back-link:hover {
-  text-decoration: underline;
-}
-</style>
-{% endblock %}
-
 {% block body %}
-<div class="new-post-container">
-  <div class="new-post-title">Crear un nuevo Post</div>
-  {{ form_start(form) }}
-    <div class="form-group">
-      {{ form_label(form.title, 'Título') }}
-      {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
-      {{ form_errors(form.title) }}
-    </div>
-    <div class="form-group">
-      {{ form_label(form.content, 'Contenido') }}
-      {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 5}}) }}
-      {{ form_errors(form.content) }}
-    </div>
-    <div class="form-group">
-      {{ form_label(form.media, 'Imagen/Archivo') }}
-      {{ form_widget(form.media, {'attr': {'class': 'form-control'}}) }}
-      {{ form_errors(form.media) }}
-    </div>
-    <button type="submit" class="btn-submit">Publicar</button>
-  {{ form_end(form) }}
-  <a href="{{ path('post_index') }}" class="back-link">« Volver</a>
-</div>
+  <div class="container mx-auto py-8"
+       {{ react_component('PostNew', {
+           initialData: data,
+           apiUrl:     apiUrl
+       }) }}>
+  </div>
 {% endblock %}

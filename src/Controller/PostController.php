@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-namespace App\Controller;
-
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
@@ -32,13 +30,14 @@ class PostController extends AbstractController
         $mapped = array_map(fn($p) => [
             'id'        => $p->getId(),
             'title'     => $p->getTitle(),
-            'snippet'   => mb_substr($p->getContent(), 0, 150)
-                          . (mb_strlen($p->getContent()) > 150 ? '…' : ''),
+            'snippet'   => $p->getContent(),
             'media'     => $p->getMedia(),
             'author'    => $p->getUser()->getUsername(),
             'authorId'  => $p->getUser()->getId(),
             'createdAt' => $p->getCreatedAt()->format('Y-m-d'),
             'likes'     => count($p->getLikes()),
+            'comments'     => count($p->getComments()),
+            'avatar'    => $p->getUser()->getAvatar(),
         ], $posts);
 
         if ($request->isXmlHttpRequest()) {
@@ -54,37 +53,83 @@ class PostController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'post_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'post_new', methods: ['GET','POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
-    {
+{
+    if ($request->isXmlHttpRequest()) {
         $post = new Post();
-        $form = $this->createForm(PostType::class, $post);
+        $form = $this->createForm(PostType::class, $post, [
+            'csrf_protection'   => false,
+            'allow_extra_fields'=> true,
+        ]);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $post
-                ->setUser($this->getUser())
-                ->setCreatedAt(new \DateTime())
-                ->setUpdatedAt(new \DateTime())
-                ->setIsPublished(true)
-            ;
-            $mediaFile = $form->get('media')->getData();
-            if ($mediaFile) {
-                $newFilename = uniqid().'.'.$mediaFile->guessExtension();
-                $mediaFile->move($this->getParameter('kernel.project_dir').'/public/uploads/posts', $newFilename);
-                $post->setMedia($newFilename);
-            }
-            $em->persist($post);
-            $em->flush();
 
-            return $this->redirectToRoute('user_profile', [
-                'id' => $post->getUser()->getId(),
-            ]);
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $errors = [];
+            foreach ($form->getErrors(true) as $error) {
+                $errors[] = $error->getMessage();
+            }
+
+            return $this->json([
+                'success' => false,
+                'errors'  => $errors,
+            ], 400);
         }
 
-        return $this->render('post/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        $post
+            ->setUser($this->getUser())
+            ->setCreatedAt(new \DateTime())
+            ->setUpdatedAt(new \DateTime())
+            ->setIsPublished(true)
+        ;
+
+        if ($mediaFile = $form->get('media')->getData()) {
+            $newFilename = uniqid().'.'.$mediaFile->guessExtension();
+            $mediaFile->move(
+                $this->getParameter('kernel.project_dir').'/public/uploads/posts',
+                $newFilename
+            );
+            $post->setMedia($newFilename);
+        }
+
+        $em->persist($post);
+        $em->flush();
+
+        $mediaUrl = $post->getMedia()
+            ? $request->getSchemeAndHttpHost().'/uploads/posts/'.$post->getMedia()
+            : null;
+
+        $data = [
+            'id'          => $post->getId(),
+            'title'       => $post->getTitle(),
+            'content'     => $post->getContent(),
+            'mediaUrl'    => $mediaUrl,
+            'isPublished' => $post->getIsPublished(),
+            'createdAt'   => $post->getCreatedAt()->format(\DateTime::ATOM),
+            'updatedAt'   => $post->getUpdatedAt()->format(\DateTime::ATOM),
+            'user'        => [
+                'id'       => $post->getUser()->getId(),
+                'username' => $post->getUser()->getUserIdentifier(),
+            ],
+        ];
+
+        return $this->json([
+            'success'     => true,
+            'post'        => $data,
+            'redirectUrl' => $this->generateUrl('user_profile', [
+                'id' => $post->getUser()->getId(),
+            ]),
+        ], 201);
     }
+
+    return $this->render('post/new.html.twig', [
+        'data'   => [
+            'title'   => '',
+            'content' => '',
+        ],
+        'apiUrl' => $this->generateUrl('post_new'),
+    ]);
+}
 
     #[Route('/{id}', name: 'post_show', methods: ['GET'])]
     public function show(Post $post): Response
