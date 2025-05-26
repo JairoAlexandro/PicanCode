@@ -1,4 +1,5 @@
 const Encore = require('@symfony/webpack-encore');
+const path   = require('path');
 const isProd = Encore.isProduction();
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
@@ -72,6 +73,11 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
+    .addAliases({
+        // Fuerza que "react" y "react-dom" apunten siempre al node_modules raíz:
+        react:     path.resolve(__dirname, 'node_modules/react'),
+        'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+    })
 ;
 
 module.exports = Encore.getWebpackConfig();

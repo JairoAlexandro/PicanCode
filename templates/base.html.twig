@@ -8,9 +8,13 @@
     {% block stylesheets %}
       {{ encore_entry_link_tags('app') }}
     {% endblock %}
+
+    {% block javascripts %}
+      {{ encore_entry_script_tags('app') }}
+    {% endblock %}
   </head>
 
-  <body class="min-h-screen bg-[#1C1C1C] text-white font-sans antialiased">
+  <body class="min-h-screen bg-[#1C1C1C] text-white font-sans antialiased" data-turbo-suppress-warning>
     <nav class="bg-[#000000] shadow-lg">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
@@ -68,9 +72,5 @@
 
       {% block body %}{% endblock %}
     </main>
-
-    {% block javascripts %}
-      {{ encore_entry_script_tags('app') }}
-    {% endblock %}
   </body>
 </html>

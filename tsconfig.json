@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    /* tu config de compilación normal */
+  },
+  "include": [
+    "assets/**/*.ts",
+    "assets/**/*.tsx",
+    "test/**/*.ts",
+    "test/**/*.tsx",
+    "vitest.config.ts"
+  ]
+}
