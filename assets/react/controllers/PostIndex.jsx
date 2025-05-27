@@ -62,7 +62,7 @@ export default function PostIndex({ apiUrl, initialData }) {
           : "Publicaciones recientes"}
       </h2>
 
-      <div className="flex flex-wrap gap-8 justify-start">
+      <div className="flex flex-wrap gap-8 justify-center">
         {posts && posts.length > 0 ? (
           posts.map((post) => (
             <article
@@ -101,7 +101,7 @@ export default function PostIndex({ apiUrl, initialData }) {
                   <img
                     src={`/uploads/posts/${post.media}`}
                     alt={post.title}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-contain rounded-lg"
                   />
                 </div>
               )}

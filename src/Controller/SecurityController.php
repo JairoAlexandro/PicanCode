@@ -29,6 +29,12 @@ class SecurityController extends AbstractController
         
     }
 
+    #[Route(path: '/gestion', name: 'gestion_home')]
+    public function homeGestion(AuthenticationUtils $authUtils): Response
+    {
+        return $this->redirectToRoute('gestion_login');
+}
+
     #[Route(path: '/gestion/login', name: 'gestion_login')]
     public function loginGestion(AuthenticationUtils $authUtils): Response
     {

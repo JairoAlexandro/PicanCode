@@ -15,42 +15,69 @@
   </head>
 
   <body class="min-h-screen bg-[#1C1C1C] text-white font-sans antialiased" data-turbo-suppress-warning>
-    <nav class="bg-[#000000] shadow-lg">
+    <nav class="relative bg-black shadow-lg">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
           <a href="{{ path('post_index') }}" class="text-3xl font-extrabold tracking-tight">
             Pican<span class="text-red-500">Code</span>
           </a>
-          <div class="flex items-center space-x-3">
+
+          <!-- Enlaces en escritorio -->
+          <div class="hidden md:flex items-center space-x-3">
             {% if app.user %}
               <a
                 href="{{ path('post_new') }}"
                 class="inline-flex items-center px-5 py-2 bg-gray-800 hover:bg-gray-700 transition text-sm font-medium rounded-full shadow-md"
-              >
-                Nuevo Post
-              </a>
+              >Nuevo Post</a>
               <a
                 href="{{ path('user_profile', {'id': app.user.id}) }}"
                 class="inline-flex items-center px-5 py-2 bg-gray-800 hover:bg-gray-700 transition text-sm font-medium rounded-full shadow-md"
-              >
-                Mi Perfil
-              </a>
+              >Mi Perfil</a>
               <a
                 href="{{ path('app_logout') }}"
                 class="inline-flex items-center px-5 py-2 bg-red-600 hover:bg-red-700 transition text-sm font-medium rounded-full shadow-md"
-              >
-                Cerrar Sesión
-              </a>
+              >Cerrar Sesión</a>
             {% else %}
               <a
                 href="{{ path('app_login') }}"
                 class="inline-flex items-center px-5 py-2 bg-gray-800 hover:bg-gray-700 transition text-sm font-medium rounded-full shadow-md"
-              >
-                Iniciar Sesión
-              </a>
+              >Iniciar Sesión</a>
             {% endif %}
           </div>
+
+          <!-- Botón hamburguesa en móvil -->
+          <button
+            id="hamburger-btn"
+            type="button"
+            class="md:hidden p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none transition-transform duration-300 ease-in-out"
+            onclick="
+              const btn = document.getElementById('hamburger-btn');
+              btn.classList.toggle('rotate-90');
+              document.getElementById('mobile-menu').classList.toggle('hidden');
+            "
+          >
+            <span class="sr-only">Abrir menú</span>
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
+      </div>
+
+      <!-- Menú desplegable en móvil -->
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden absolute right-4 top-16 w-48 bg-black p-2 rounded-lg shadow-lg space-y-2"
+      >
+        {% if app.user %}
+          <a href="{{ path('post_new') }}" class="block px-4 py-2 text-left text-sm font-medium rounded-md hover:bg-gray-700 transition">Nuevo Post</a>
+          <a href="{{ path('user_profile', {'id': app.user.id}) }}" class="block px-4 py-2 text-left text-sm font-medium rounded-md hover:bg-gray-700 transition">Mi Perfil</a>
+          <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-left text-sm font-medium rounded-md text-red-500 hover:text-red-400 hover:bg-gray-700 transition">Cerrar Sesión</a>
+        {% else %}
+          <a href="{{ path('app_login') }}" class="block px-4 py-2 text-left text-sm font-medium rounded-md hover:bg-gray-700 transition">Iniciar Sesión</a>
+        {% endif %}
       </div>
     </nav>
 

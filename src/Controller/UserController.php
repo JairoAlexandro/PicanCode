@@ -90,6 +90,7 @@ class UserController extends AbstractController
             'media'   => $p->getMedia(),
             'snippet' => mb_substr($p->getContent(), 0, 100) . (mb_strlen($p->getContent()) > 100 ? '…' : ''),
             'likes'   => count($p->getLikes()),
+            'comments'     => count($p->getComments()),
         ], $user->getPosts()->toArray());
 
         $intent    = ($isFollowing ? 'unfollow' : 'follow') . $user->getId();
