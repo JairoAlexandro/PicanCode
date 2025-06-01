@@ -131,15 +131,131 @@ class PostController extends AbstractController
     ]);
 }
 
-    #[Route('/{id}', name: 'post_show', methods: ['GET'])]
-    public function show(Post $post): Response
-    {
-        $commentForm = $this->createForm(CommentType::class)->createView();
-        return $this->render('post/show.html.twig', [
-            'post' => $post,
-            'commentForm' => $commentForm,
-        ]);
+   #[Route('/{id}', name: 'post_show', methods: ['GET', 'POST'])]
+public function show(Request $request, Post $post, EntityManagerInterface $em): Response
+{
+    if ($request->isXmlHttpRequest()) {
+        $user = $this->getUser();
+
+        if ($request->isMethod('GET')) {
+            $comments = [];
+            foreach ($post->getComments() as $comment) {
+                $comments[] = [
+                    'id'        => $comment->getId(),
+                    'content'   => $comment->getContent(),
+                    'author'    => $comment->getUser()?->getUsername() ?? 'Anónimo',
+                    'createdAt' => $comment->getCreatedAt()?->format('Y-m-d H:i:s'),
+                ];
+            }
+
+            $userLiked = $user
+                ? $post->getLikes()->exists(fn($key, $like) => $like->getUser() === $user)
+                : false;
+
+            return $this->json([
+                'data' => [
+                    'id'                  => $post->getId(),
+                    'title'               => $post->getTitle(),
+                    'content'             => $post->getContent(),
+                    'media'               => $post->getMedia(),
+                    'author'              => $post->getUser()?->getUsername(),
+                    'authorId'            => $post->getUser()?->getId(),
+                    'createdAt'           => $post->getCreatedAt()?->format('Y-m-d H:i:s'),
+                    'likes'               => count($post->getLikes()),
+                    'likedByCurrentUser'  => $userLiked,
+                    'comments'            => $comments,
+                ],
+                'apiUrl' => $this->generateUrl('post_show', ['id' => $post->getId()]),
+            ]);
+        }
+
+        if ($request->isMethod('POST')) {
+            if (!$user) {
+                return $this->json(['success' => false, 'error' => 'No autenticado'], 401);
+            }
+
+            $data = json_decode($request->getContent(), true);
+
+            if (isset($data['content'])) {
+                if (empty($data['content'])) {
+                    return $this->json(['success' => false, 'error' => 'El comentario no puede estar vacío'], 400);
+                }
+
+                $comment = new \App\Entity\Comment();
+                $comment->setContent($data['content']);
+                $comment->setPost($post);
+                $comment->setUser($user);
+                $comment->setCreatedAt(new \DateTime());
+
+                $em->persist($comment);
+                $em->flush();
+
+                return $this->json([
+                    'success' => true,
+                    'comment' => [
+                        'id'        => $comment->getId(),
+                        'content'   => $comment->getContent(),
+                        'author'    => $user->getUsername(),
+                        'createdAt' => $comment->getCreatedAt()->format('Y-m-d H:i:s'),
+                    ]
+                ], 201);
+            }
+
+            $existingLike = $post->getLikes()->filter(fn($like) => $like->getUser() === $user)->first();
+
+            if ($existingLike) {
+                $em->remove($existingLike);
+                $em->flush();
+                return $this->json(['success' => true, 'liked' => false]);
+            }
+
+            $like = new \App\Entity\Like();
+            $like->setPost($post);
+            $like->setUser($user);
+
+            $em->persist($like);
+            $em->flush();
+
+            return $this->json(['success' => true, 'liked' => true]);
+        }
     }
+
+    $comments = [];
+    foreach ($post->getComments() as $comment) {
+        $comments[] = [
+            'id'        => $comment->getId(),
+            'content'   => $comment->getContent(),
+            'author'    => $comment->getUser()?->getUsername() ?? 'Anónimo',
+            'createdAt' => $comment->getCreatedAt()?->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    $user = $this->getUser();
+    $userLiked = $user
+        ? $post->getLikes()->exists(fn($key, $like) => $like->getUser() === $user)
+        : false;
+
+    $data = [
+        'id'                  => $post->getId(),
+        'title'               => $post->getTitle(),
+        'content'             => $post->getContent(),
+        'media'               => $post->getMedia(),
+        'author'              => $post->getUser()?->getUsername(),
+        'authorId'            => $post->getUser()?->getId(),
+        'createdAt'           => $post->getCreatedAt()?->format('Y-m-d H:i:s'),
+        'likes'               => count($post->getLikes()),
+        'likedByCurrentUser'  => $userLiked,
+        'comments'            => $comments,
+    ];
+
+    return $this->render('post/show.html.twig', [
+        'data'   => $data,
+        'apiUrl' => $this->generateUrl('post_show', ['id' => $post->getId()]),
+    ]);
+}
+
+
+
 
     #[Route('/{id}/edit', name: 'post_edit', methods: ['GET', 'POST'])]
     public function edit(Post $post, Request $request, EntityManagerInterface $em): Response
