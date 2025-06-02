@@ -1,5 +1,4 @@
 <?php
-// src/Controller/SecurityController.php
 
 namespace App\Controller;
 
