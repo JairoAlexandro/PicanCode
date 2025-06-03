@@ -139,7 +139,6 @@ class PostController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             $user = $this->getUser();
 
-            // GET AJAX: devolver JSON con post, comentarios y estado de like
             if ($request->isMethod('GET')) {
                 $comments = [];
                 foreach ($post->getComments() as $commentEntity) {
@@ -173,7 +172,6 @@ class PostController extends AbstractController
                 ]);
             }
 
-            // POST AJAX: comentario o like
             if ($request->isMethod('POST')) {
                 if (!$user) {
                     return $this->json(['success' => false, 'error' => 'No autenticado'], 401);
@@ -181,7 +179,6 @@ class PostController extends AbstractController
 
                 $payload = json_decode($request->getContent(), true);
 
-                // 1) Si viene 'content', es un comentario
                 if (isset($payload['content'])) {
                     if (empty($payload['content'])) {
                         return $this->json(['success' => false, 'error' => 'El comentario no puede estar vacío'], 400);
@@ -207,7 +204,6 @@ class PostController extends AbstractController
                     ], 201);
                 }
 
-                // 2) Si no viene 'content', es togglear like
                 $existingLike = $post->getLikes()->filter(fn($like) => $like->getUser() === $user)->first();
 
                 if ($existingLike) {
@@ -227,7 +223,6 @@ class PostController extends AbstractController
             }
         }
 
-        // Render clásico (HTML Twig)
         $comments = [];
         foreach ($post->getComments() as $commentEntity) {
             $comments[] = [
@@ -279,29 +274,75 @@ class PostController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'post_edit', methods: ['GET', 'POST'])]
-    public function edit(Post $post, Request $request, EntityManagerInterface $em): Response
+    public function edit(Request $request, Post $post, EntityManagerInterface $em): Response
     {
-        $form = $this->createForm(PostType::class, $post);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($request->isXmlHttpRequest()) {
+            if ($request->isMethod('GET')) {
+                $mediaUrl = null;
+                if ($post->getMedia()) {
+                    $mediaUrl = $request->getSchemeAndHttpHost() . '/uploads/posts/' . $post->getMedia();
+                }
+
+                return $this->json([
+                    'data' => [
+                        'id'      => $post->getId(),
+                        'title'   => $post->getTitle(),
+                        'content' => $post->getContent(),
+                        'media'   => $mediaUrl,
+                    ],
+                    'apiUrl' => $this->generateUrl('post_edit', ['id' => $post->getId()]),
+                ]);
+            }
+
+            $form = $this->createForm(PostType::class, $post, [
+                'csrf_protection'    => false,
+                'allow_extra_fields' => true,
+            ]);
+            $form->handleRequest($request);
+
+            if (!$form->isSubmitted() || !$form->isValid()) {
+                $errors = [];
+                foreach ($form->getErrors(true) as $error) {
+                    $errors[] = $error->getMessage();
+                }
+
+                return $this->json([
+                    'success' => false,
+                    'errors'  => $errors,
+                ], 400);
+            }
+
             $post->setUpdatedAt(new \DateTime());
             $post->setIsPublished(true);
+
             if ($mediaFile = $form->get('media')->getData()) {
-                $newFilename = uniqid().'.'.$mediaFile->guessExtension();
+                $newFilename = uniqid() . '.' . $mediaFile->guessExtension();
                 $mediaFile->move(
-                    $this->getParameter('kernel.project_dir').'/public/uploads/posts',
+                    $this->getParameter('kernel.project_dir') . '/public/uploads/posts',
                     $newFilename
                 );
                 $post->setMedia($newFilename);
             }
+
             $em->flush();
 
-            return $this->redirectToRoute('post_show', ['id' => $post->getId()]);
+            return $this->json([
+                'success'     => true,
+                'redirectUrl' => $this->generateUrl('post_show', ['id' => $post->getId()]),
+            ], 200);
         }
 
+        $data = [
+            'id'      => $post->getId(),
+            'title'   => $post->getTitle(),
+            'content' => $post->getContent(),
+            'media'   => null,
+        ];
+        $apiUrl = $this->generateUrl('post_edit', ['id' => $post->getId()]);
+
         return $this->render('post/edit.html.twig', [
-            'post' => $post,
-            'form' => $form->createView(),
+            'data'   => $data,
+            'apiUrl' => $apiUrl,
         ]);
     }
 

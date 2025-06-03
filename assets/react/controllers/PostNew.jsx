@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function PostNew({ initialData = {}, apiUrl }) {
   const [snippet, setSnippet] = useState(initialData.content || "");
-  const [language, setLanguage] = useState(
-    initialData.title || "javascript"
-  );
-  const [media, setMedia] = useState(null);
+  const [language, setLanguage] = useState(initialData.title || "javascript");
+  const [mediaFile, setMediaFile] = useState(null);
+  const [mediaPreview, setMediaPreview] = useState(null);
   const [errors, setErrors] = useState({ global: [] });
+
+  // Genera preview cuando cambie mediaFile
+  useEffect(() => {
+    if (!mediaFile) {
+      setMediaPreview(null);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setMediaPreview(reader.result);
+    reader.readAsDataURL(mediaFile);
+  }, [mediaFile]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +25,7 @@ export default function PostNew({ initialData = {}, apiUrl }) {
     const fd = new FormData();
     fd.append("post[title]", language);
     fd.append("post[content]", snippet);
-    if (media) fd.append("post[media]", media);
+    if (mediaFile) fd.append("post[media]", mediaFile);
 
     try {
       const res = await fetch(apiUrl, {
@@ -38,6 +48,11 @@ export default function PostNew({ initialData = {}, apiUrl }) {
     }
   };
 
+  const handleMediaChange = (e) => {
+    const file = e.target.files[0];
+    setMediaFile(file);
+  };
+
   return (
     <div className="max-w-xl mx-auto mt-12 bg-[#09090B] p-8 rounded-2xl shadow-xl">
       <h2 className="text-2xl font-bold text-white mb-6 text-center">
@@ -53,6 +68,7 @@ export default function PostNew({ initialData = {}, apiUrl }) {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* LANGUAGE SELECT */}
         <div>
           <label className="block text-gray-300 font-medium mb-2">
             Language
@@ -78,6 +94,7 @@ export default function PostNew({ initialData = {}, apiUrl }) {
           </select>
         </div>
 
+        {/* CODE SNIPPET */}
         <div>
           <label className="block text-gray-300 font-medium mb-2">
             Code Snippet
@@ -91,17 +108,17 @@ export default function PostNew({ initialData = {}, apiUrl }) {
           />
         </div>
 
+        {/* PREVIEW */}
         <div>
           <label className="block text-gray-300 font-medium mb-2">
             Preview
           </label>
           <pre className="w-full h-48 bg-gray-800 border border-gray-700 rounded-lg p-4 font-mono text-sm text-green-400 overflow-auto whitespace-pre-wrap">
-            {snippet.trim() !== ""
-              ? snippet
-              : "// Preview your code here"}
+            {snippet.trim() !== "" ? snippet : "// Preview your code here"}
           </pre>
         </div>
 
+        {/* MEDIA UPLOAD */}
         <div>
           <label className="block text-gray-300 font-medium mb-2">
             Media (Image or Video)
@@ -124,7 +141,7 @@ export default function PostNew({ initialData = {}, apiUrl }) {
               />
             </svg>
             <span className="text-gray-500 mb-1">
-              Drag &amp; drop or click to browse
+              Arrastra o haz clic para seleccionar
             </span>
             <button
               type="button"
@@ -135,13 +152,41 @@ export default function PostNew({ initialData = {}, apiUrl }) {
             <input
               id="media-upload"
               type="file"
+              accept="image/*,video/*"
               className="hidden"
-              onChange={(e) => setMedia(e.target.files[0])}
+              onChange={handleMediaChange}
             />
           </label>
-          {media && <p className="mt-2 text-gray-400 text-sm">{media.name}</p>}
+
+          {/* MEDIA PREVIEW */}
+          {mediaPreview && (
+            <div className="mt-4">
+              {mediaPreview.startsWith("data:") ? (
+                mediaFile && mediaFile.type.startsWith("image/") ? (
+                  <img
+                    src={mediaPreview}
+                    alt="Preview"
+                    className="w-full h-auto rounded-lg border border-gray-700 shadow-sm"
+                  />
+                ) : mediaFile && mediaFile.type.startsWith("video/") ? (
+                  <video
+                    src={mediaPreview}
+                    controls
+                    className="w-full h-auto rounded-lg border border-gray-700 shadow-sm"
+                  />
+                ) : null
+              ) : (
+                <img
+                  src={mediaPreview}
+                  alt="Existing Preview"
+                  className="w-full h-auto rounded-lg border border-gray-700 shadow-sm"
+                />
+              )}
+            </div>
+          )}
         </div>
 
+        {/* SUBMIT BUTTON */}
         <button
           type="submit"
           className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition cursor-pointer"
