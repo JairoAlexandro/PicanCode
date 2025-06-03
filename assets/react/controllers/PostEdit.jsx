@@ -7,7 +7,6 @@ export default function PostEdit({ initialData, apiUrl }) {
   const [mediaPreview, setMediaPreview] = useState(initialData.media || null);
   const [errors, setErrors] = useState([]);
 
-  // Cargar URL de media actual vía AJAX si no viene en initialData
   useEffect(() => {
     if (!initialData.media) {
       fetch(apiUrl, {
@@ -20,7 +19,6 @@ export default function PostEdit({ initialData, apiUrl }) {
           }
         })
         .catch(() => {
-          // Ignorar fallos de preview
         });
     }
   }, [apiUrl, initialData.media]);
@@ -82,7 +80,6 @@ export default function PostEdit({ initialData, apiUrl }) {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* LENGUAJE */}
           <div>
             <label className="block text-gray-300 font-medium mb-2">
               Lenguaje
@@ -108,7 +105,6 @@ export default function PostEdit({ initialData, apiUrl }) {
             </select>
           </div>
 
-          {/* CONTENIDO */}
           <div>
             <label className="block text-gray-300 font-medium mb-2">
               Código
@@ -122,7 +118,6 @@ export default function PostEdit({ initialData, apiUrl }) {
             />
           </div>
 
-          {/* PREVIEW DE CÓDIGO */}
           <div>
             <label className="block text-gray-300 font-medium mb-2">
               Vista previa
@@ -132,7 +127,6 @@ export default function PostEdit({ initialData, apiUrl }) {
             </pre>
           </div>
 
-          {/* MEDIA */}
           <div>
             <label className="block text-gray-300 font-medium mb-2">
               Media (Imagen o Video)
@@ -204,7 +198,6 @@ export default function PostEdit({ initialData, apiUrl }) {
             )}
           </div>
 
-          {/* BOTÓN GUARDAR */}
           <div>
             <button
               type="submit"
@@ -215,7 +208,6 @@ export default function PostEdit({ initialData, apiUrl }) {
           </div>
         </form>
 
-        {/* Enlace para volver al post */}
         <div className="mt-6 text-center">
           <a
             href={`/posts/${initialData.id}`}

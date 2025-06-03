@@ -7,7 +7,6 @@ export default function PostNew({ initialData = {}, apiUrl }) {
   const [mediaPreview, setMediaPreview] = useState(null);
   const [errors, setErrors] = useState({ global: [] });
 
-  // Genera preview cuando cambie mediaFile
   useEffect(() => {
     if (!mediaFile) {
       setMediaPreview(null);
@@ -68,7 +67,6 @@ export default function PostNew({ initialData = {}, apiUrl }) {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* LANGUAGE SELECT */}
         <div>
           <label className="block text-gray-300 font-medium mb-2">
             Language
@@ -94,7 +92,6 @@ export default function PostNew({ initialData = {}, apiUrl }) {
           </select>
         </div>
 
-        {/* CODE SNIPPET */}
         <div>
           <label className="block text-gray-300 font-medium mb-2">
             Code Snippet
@@ -108,7 +105,6 @@ export default function PostNew({ initialData = {}, apiUrl }) {
           />
         </div>
 
-        {/* PREVIEW */}
         <div>
           <label className="block text-gray-300 font-medium mb-2">
             Preview
@@ -118,7 +114,6 @@ export default function PostNew({ initialData = {}, apiUrl }) {
           </pre>
         </div>
 
-        {/* MEDIA UPLOAD */}
         <div>
           <label className="block text-gray-300 font-medium mb-2">
             Media (Image or Video)
@@ -158,7 +153,6 @@ export default function PostNew({ initialData = {}, apiUrl }) {
             />
           </label>
 
-          {/* MEDIA PREVIEW */}
           {mediaPreview && (
             <div className="mt-4">
               {mediaPreview.startsWith("data:") ? (
@@ -186,7 +180,6 @@ export default function PostNew({ initialData = {}, apiUrl }) {
           )}
         </div>
 
-        {/* SUBMIT BUTTON */}
         <button
           type="submit"
           className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition cursor-pointer"
