@@ -1,39 +1,84 @@
-{# templates/gestion/base.html.twig #}
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>{% block title %}Panel de Gestión{% endblock %}</title>
-    <style>
-      /* Tus estilos de sidebar aquí… */
-      body { display: flex; margin: 0; font-family: sans-serif; }
-      aside {
-        width: 220px;
-        background: #2b2b2b;
-        color: #fff;
-        min-height: 100vh;
-        padding: 1rem;
-      }
-      aside a { display: block; color: #fff; margin: .5rem 0; text-decoration: none; }
-      aside a:hover { background: #3b3b3b; }
-      main { flex:1; padding: 1.5rem; background: #1b1b1b; color: #fff; }
-      .topbar { background: #3b3b3b; padding: .5rem 1rem; color:#fff; }
-    </style>
-    {% block stylesheets %}{% endblock %}
+    {% block stylesheets %}
+      {{ encore_entry_link_tags('app') }}
+    {% endblock %}
   </head>
-  <body>
-    <aside>
-      <h2>🛠 Gestión</h2>
-      <a href="{{ path('gestion_user_index') }}">Usuarios</a>
-      <a href="{{ path('gestion_post_index') }}">Posts</a>
-      <hr>
-      <a href="{{ path('gestion_logout') }}">Cerrar Sesión</a>
-    </aside>
-    <div style="flex:1;display:flex;flex-direction:column;">
-      <div class="topbar">
-        {% block topbar %}<strong>Panel de Gestión</strong>{% endblock %}
+  <body class="flex min-h-screen bg-gray-900 text-gray-200 font-sans">
+    <aside
+      id="sidebar"
+      class="
+        fixed inset-y-0 left-0 z-40 w-56 h-screen
+        transform -translate-x-full
+        bg-gray-800 text-gray-100 flex flex-col p-6 shadow-lg
+        transition-transform duration-300
+        md:translate-x-0 md:fixed md:top-0 md:left-0 md:h-screen md:shadow-none
+      "
+    >
+      <h2 class="text-2xl font-semibold mb-8 flex items-center gap-2">
+        <span class="text-red-500">🛠</span>
+        <span>Gestión</span>
+      </h2>
+
+      <nav class="flex-1 space-y-2 overflow-y-auto">
+        <a
+          href="{{ path('gestion_user_index') }}"
+          class="block rounded-md px-4 py-2 hover:bg-gray-700 transition"
+        >
+          Usuarios
+        </a>
+        <a
+          href="{{ path('gestion_post_index') }}"
+          class="block rounded-md px-4 py-2 hover:bg-gray-700 transition"
+        >
+          Posts
+        </a>
+      </nav>
+
+      <hr class="border-gray-700 my-6" />
+
+      <div class="mt-auto">
+        <a
+          href="{{ path('gestion_logout') }}"
+          class="block rounded-md px-4 py-2 text-red-400 hover:text-red-300 hover:bg-gray-700 transition"
+        >
+          Cerrar Sesión
+        </a>
       </div>
-      <main>{% block body %}{% endblock %}</main>
+    </aside>
+
+    <div class="flex-1 flex flex-col md:ml-56">
+      <header class="bg-gray-800 px-4 py-3 shadow-md flex items-center justify-between">
+        <button
+          id="toggleSidebar"
+          class="md:hidden p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none transition-transform duration-300 ease-in-out"
+          onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')"
+        >
+          <span class="sr-only">Abrir menú</span>
+          <svg
+            class="h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <div class="flex-1 text-center md:text-left">
+          {% block topbar %}
+            <h1 class="text-xl font-semibold">Panel de Gestión</h1>
+          {% endblock %}
+        </div>
+      </header>
+      <main class="flex-1 p-6 overflow-auto bg-gray-900">
+        {% block body %}{% endblock %}
+      </main>
     </div>
   </body>
 </html>

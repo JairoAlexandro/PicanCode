@@ -2,123 +2,86 @@
 
 {% block title %}Gestión de Usuarios{% endblock %}
 
-{% block stylesheets %}
-  {{ parent() }}
-  <style>
-    .filter-form {
-      margin-bottom: 1.5rem;
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-    .filter-form input {
-      padding: 0.4rem 0.6rem;
-      border-radius: 0.3rem;
-      border: 1px solid #555;
-      background: #333;
-      color: #fff;
-    }
-    .btn-filter, .btn-action {
-      padding: 0.4rem 0.8rem;
-      border: none;
-      border-radius: 0.3rem;
-      cursor: pointer;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .btn-filter {
-      background: #27ae60;
-      color: #fff;
-    }
-    .btn-filter:hover {
-      background: #1e8449;
-    }
-    .btn-action {
-      background: #3498db;
-      color: #fff;
-    }
-    .btn-action:hover {
-      background: #217dbb;
-    }
-    .btn-delete {
-      background: #e74c3c;
-      margin-left: 0.3rem;
-    }
-    .btn-delete:hover {
-      background: #c0392b;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 2rem;
-    }
-    th, td {
-      padding: 0.6rem 0.8rem;
-      border-bottom: 1px solid #444;
-      color: #eee;
-    }
-    th { background: #2c3e50; text-align: left; }
-  </style>
-{% endblock %}
-
 {% block body %}
-  <h1>👥 Gestión de Usuarios</h1>
+  <div class="space-y-6">
+    <h1 class="text-3xl font-bold flex items-center gap-2">
+      <span>👥</span>
+      <span>Gestión de Usuarios</span>
+    </h1>
 
-  {# ————— Formulario de filtro ————— #}
-  <form class="filter-form" method="get">
-    <input
-      type="number"
-      name="id"
-      min="1"
-      placeholder="ID"
-      style="width:80px;"
-      value="{{ id_filter > 0 ? id_filter : '' }}"
-    />
-    <input
-      type="text"
-      name="username"
-      placeholder="Usuario contiene..."
-      value="{{ username_filter }}"
-    />
-    <button type="submit" class="btn-filter">Buscar</button>
-  </form>
-  {# ———————————————————————————————— #}
-
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Usuario</th>
-        <th>Email</th>
-        <th>Roles</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for u in users %}
-        <tr>
-          <td>{{ u.id }}</td>
-          <td>{{ u.username }}</td>
-          <td>{{ u.email }}</td>
-          <td>{{ u.roles|join(', ') }}</td>
-          <td>
-            <a href="{{ path('gestion_user_edit',{id:u.id}) }}"
-               class="btn-action">Editar</a>
-            <form action="{{ path('gestion_user_delete',{id:u.id}) }}"
-                  method="post" style="display:inline">
-              <input type="hidden" name="_token"
-                     value="{{ csrf_token('delete_user'~u.id) }}">
-              <button type="submit"
-                      class="btn-action btn-delete"
-                      onclick="return confirm('¿Eliminar usuario #{{ u.id }}?');">
-                Eliminar
-              </button>
-            </form>
-          </td>
-        </tr>
-      {% else %}
-        <tr><td colspan="5" style="color:#aaa">No se encontraron usuarios.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <form method="get" class="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-3 items-start md:items-center mb-6">
+      <input
+        type="number"
+        name="id"
+        min="1"
+        placeholder="ID"
+        value="{{ id_filter > 0 ? id_filter : '' }}"
+        class="w-full md:w-20 bg-gray-800 border border-gray-700 text-gray-200 placeholder-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+      />
+      <input
+        type="text"
+        name="username"
+        placeholder="Usuario contiene..."
+        value="{{ username_filter }}"
+        class="flex-1 bg-gray-800 border border-gray-700 text-gray-200 placeholder-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+      />
+      <button
+        type="submit"
+        class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded transition"
+      >
+        Buscar
+      </button>
+    </form>
+    <div class="overflow-x-auto bg-gray-800 rounded-lg shadow-md">
+      <table class="w-full table-auto whitespace-nowrap">
+        <thead>
+          <tr class="bg-gray-700">
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-200">ID</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-200">Usuario</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-200">Email</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-200">Roles</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-200">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-700">
+          {% for u in users %}
+            <tr class="hover:bg-gray-700">
+              <td class="px-4 py-2 text-gray-200">{{ u.id }}</td>
+              <td class="px-4 py-2 text-gray-200">{{ u.username }}</td>
+              <td class="px-4 py-2 text-gray-200">{{ u.email }}</td>
+              <td class="px-4 py-2 text-gray-200">{{ u.roles|join(', ') }}</td>
+              <td class="px-4 py-2 flex flex-wrap gap-2">
+                <a
+                  href="{{ path('gestion_user_edit', {id: u.id}) }}"
+                  class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-3 py-1 rounded transition"
+                >
+                  Editar
+                </a>
+                <form
+                  action="{{ path('gestion_user_delete', {id: u.id}) }}"
+                  method="post"
+                  onsubmit="return confirm('¿Eliminar usuario #{{ u.id }}?');"
+                  class="inline"
+                >
+                  <input type="hidden" name="_token" value="{{ csrf_token('delete_user'~u.id) }}">
+                  <button
+                    type="submit"
+                    class="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded transition"
+                  >
+                    Eliminar
+                  </button>
+                </form>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="5" class="px-4 py-6 text-center text-gray-400">
+                No se encontraron usuarios.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 {% endblock %}

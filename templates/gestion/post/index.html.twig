@@ -1,120 +1,109 @@
+{# templates/gestion/post/index.html.twig #}
 {% extends 'gestion/base.html.twig' %}
 
 {% block title %}Gestión de Posts{% endblock %}
 
-{% block stylesheets %}
-  {{ parent() }}
-  <style>
-    .filter-form {
-      margin-bottom: 1.5rem;
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-    .filter-form input {
-      padding: 0.4rem 0.6rem;
-      border-radius: 0.3rem;
-      border: 1px solid #555;
-      background: #333;
-      color: #fff;
-      width: 120px;
-    }
-    .btn-filter, .btn-action {
-      padding: 0.4rem 0.8rem;
-      border: none;
-      border-radius: 0.3rem;
-      cursor: pointer;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .btn-filter {
-      background: #27ae60;
-      color: #fff;
-    }
-    .btn-filter:hover {
-      background: #1e8449;
-    }
-    .btn-action {
-      background: #3498db;
-      color: #fff;
-    }
-    .btn-action:hover {
-      background: #217dbb;
-    }
-    .btn-delete {
-      background: #e74c3c;
-      margin-left: 0.3rem;
-    }
-    .btn-delete:hover {
-      background: #c0392b;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 2rem;
-    }
-    th, td {
-      padding: 0.6rem 0.8rem;
-      border-bottom: 1px solid #444;
-      color: #eee;
-    }
-    th { background: #2c3e50; text-align: left; }
-  </style>
+{% block topbar %}
+  <h1 class="text-xl font-semibold text-white flex items-center gap-2">
+    <span class="text-white text-2xl">📄</span>
+    <span>Gestión de Posts</span>
+  </h1>
 {% endblock %}
 
 {% block body %}
-  <h1>📄 Gestión de Posts</h1>
+  <div class="space-y-6">
+    {# ————— Contenedor de filtro ————— #}
+    <div class="bg-gray-800 rounded-xl p-4 shadow-sm">
+      <form method="get" class="flex flex-col sm:flex-row gap-4 items-center">
+        <div class="flex-1 min-w-[90px]">
+          <label for="id_filter" class="block text-sm font-medium text-gray-400 mb-1">ID</label>
+          <input
+            id="id_filter"
+            type="number"
+            name="id"
+            min="1"
+            placeholder="ID"
+            value="{{ id_filter > 0 ? id_filter : '' }}"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-  <form class="filter-form" method="get">
-    <input
-      type="number"
-      name="id"
-      min="1"
-      placeholder="ID"
-      value="{{ id_filter > 0 ? id_filter : '' }}"
-    />
-    <input
-      type="text"
-      name="title"
-      placeholder="Título contiene..."
-      value="{{ title_filter }}"
-    />
-    <button type="submit" class="btn-filter">Buscar</button>
-  </form>
+        <div class="flex-1 min-w-[150px]">
+          <label for="title_filter" class="block text-sm font-medium text-gray-400 mb-1">Título contiene</label>
+          <input
+            id="title_filter"
+            type="text"
+            name="title"
+            placeholder="Buscar por título..."
+            value="{{ title_filter }}"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Título</th>
-        <th>Autor</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for p in posts %}
-        <tr>
-          <td>{{ p.id }}</td>
-          <td>{{ p.title }}</td>
-          <td>{{ p.user.username }}</td>
-          <td>
-            <a href="{{ path('gestion_post_edit',{id:p.id}) }}"
-               class="btn-action">Editar</a>
-            <form action="{{ path('gestion_post_delete',{id:p.id}) }}"
-                  method="post"
-                  style="display:inline">
-              <input type="hidden" name="_token"
-                     value="{{ csrf_token('delete_post'~p.id) }}">
-              <button type="submit" class="btn-action btn-delete"
-                      onclick="return confirm('¿Eliminar post #{{ p.id }}?');">
-                Eliminar
-              </button>
-            </form>
-          </td>
-        </tr>
-      {% else %}
-        <tr><td colspan="4" style="color:#aaa">No se encontraron posts.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        <div class="w-full sm:w-auto">
+          <button
+            type="submit"
+            class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-2 rounded-lg transition shadow-md"
+          >
+            Buscar
+          </button>
+        </div>
+      </form>
+    </div>
+    {# ————————————————————————————— #}
+
+    {# ————— Contenedor de la tabla ————— #}
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-gray-800 rounded-xl overflow-hidden">
+        <thead class="bg-gray-700">
+          <tr>
+            <th class="px-5 py-3 text-left text-sm font-medium text-gray-100">ID</th>
+            <th class="px-5 py-3 text-left text-sm font-medium text-gray-100">Título</th>
+            <th class="px-5 py-3 text-left text-sm font-medium text-gray-100">Autor</th>
+            <th class="px-5 py-3 text-left text-sm font-medium text-gray-100">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-700">
+          {% for p in posts %}
+            <tr class="hover:bg-gray-700">
+              <td class="px-5 py-4 text-sm text-gray-200 whitespace-nowrap">{{ p.id }}</td>
+              <td class="px-5 py-4 text-sm text-gray-200">{{ p.title }}</td>
+              <td class="px-5 py-4 text-sm text-gray-200 whitespace-nowrap">{{ p.user.username }}</td>
+              <td class="px-5 py-4 text-sm text-gray-200 whitespace-nowrap">
+                <div class="flex flex-wrap gap-2">
+                  <a
+                    href="{{ path('gestion_post_edit', {id: p.id}) }}"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm font-medium transition"
+                  >
+                    Editar
+                  </a>
+                  <form
+                    action="{{ path('gestion_post_delete', {id: p.id}) }}"
+                    method="post"
+                    onsubmit="return confirm('¿Eliminar post #{{ p.id }}?');"
+                    class="inline"
+                  >
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete_post' ~ p.id) }}">
+                    <button
+                      type="submit"
+                      class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm font-medium transition"
+                    >
+                      Eliminar
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="4" class="px-5 py-6 text-center text-gray-500">
+                No se encontraron posts.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {# ———————————————————————————————— #}
+  </div>
 {% endblock %}

@@ -1,13 +1,17 @@
-
+{# templates/gestion/dashboard.html.twig #}
 {% extends 'gestion/base.html.twig' %}
 
 {% block title %}Panel de Gestión{% endblock %}
 
 {% block topbar %}
-  <strong>Bienvenido, {{ app.user.userIdentifier }}!</strong>
+  <strong class="text-lg">Bienvenido, {{ app.user.userIdentifier }}!</strong>
 {% endblock %}
 
 {% block body %}
-  <h1>🔧 Panel de Gestión</h1>
-  <p>Desde aquí puedes acceder a las distintas secciones de administración.</p>
+  <div class="space-y-6">
+    <h1 class="text-3xl font-bold">🔧 Panel de Gestión</h1>
+    <p class="text-gray-300">
+      Desde aquí puedes acceder a las distintas secciones de administración.
+    </p>
+  </div>
 {% endblock %}

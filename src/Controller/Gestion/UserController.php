@@ -5,7 +5,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\{Request,Response,RedirectResponse};
+use Symfony\Component\HttpFoundation\{Request, Response, RedirectResponse};
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/gestion/user', name: 'gestion_user_')]
@@ -32,21 +32,29 @@ class UserController extends AbstractController
         $users = $qb->getQuery()->getResult();
 
         return $this->render('gestion/user/index.html.twig', [
-            'users'          => $users,
-            'id_filter'      => $idFilter,
-            'username_filter'=> $nameFilter,
+            'users'           => $users,
+            'id_filter'       => $idFilter,
+            'username_filter' => $nameFilter,
         ]);
     }
 
     #[Route('/{id}/edit', name:'edit', methods:['GET','POST'])]
     public function edit(User $user, Request $request, EntityManagerInterface $em): Response
     {
+        // 1) Creamos el formulario con UserType
         $form = $this->createForm(UserType::class, $user);
+
+        // 2) Quitar el campo "roles" (para que no intente hacer get/set de esa propiedad)
+        if ($form->has('roles')) {
+            $form->remove('roles');
+        }
+
+        // 3) Manejamos la petición
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
-            $this->addFlash('success','Usuario actualizado correctamente.');
+            $this->addFlash('success', 'Usuario actualizado correctamente.');
             return $this->redirectToRoute('gestion_user_index');
         }
 
@@ -62,7 +70,7 @@ class UserController extends AbstractController
         if ($this->isCsrfTokenValid('delete_user'.$user->getId(), $request->request->get('_token'))) {
             $em->remove($user);
             $em->flush();
-            $this->addFlash('warning','Usuario eliminado.');
+            $this->addFlash('warning', 'Usuario eliminado.');
         }
 
         return $this->redirectToRoute('gestion_user_index');
