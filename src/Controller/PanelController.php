@@ -1,5 +1,4 @@
 <?php
-// src/Controller/PanelController.php
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

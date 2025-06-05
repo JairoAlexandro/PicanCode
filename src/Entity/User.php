@@ -82,13 +82,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    // Symfony 5.3+:
     public function getUserIdentifier(): string
     {
         return $this->username;
     }
 
-    // Legacy support:
     public function getUsername(): string
     {
         return $this->username;

@@ -1,93 +1,65 @@
-{# templates/security/gestion_login.html.twig #}
+{# templates/gestion/security/login.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Acceso Gestión{% endblock %}
 
 {% block stylesheets %}
-{{ parent() }}
-  <style>
-    /* Sólo estilos del contenedor de login de gestión */
-    .gestion-login-container {
-      max-width: 400px;
-      margin: 4rem auto;
-      background: #2b2b2b;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    }
-    .gestion-login-container h1 {
-      margin-bottom: 1.5rem;
-      font-size: 1.6rem;
-      color: #fff;
-      text-align: center;
-    }
-    .gestion-login-container .form-group {
-      margin-bottom: 1rem;
-      text-align: left;
-    }
-    .gestion-login-container label {
-      display: block;
-      margin-bottom: 0.3rem;
-      color: #ccc;
-      font-weight: bold;
-    }
-    .gestion-login-container input[type="text"],
-    .gestion-login-container input[type="password"] {
-      width: 100%;
-      padding: 0.6rem 1rem;
-      border: none;
-      border-radius: 0.5rem;
-      background: #3b3b3b;
-      color: #fff;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-    .gestion-login-container .error {
-      background: rgba(231,76,60,0.2);
-      color: #e74c3c;
-      padding: 0.8rem;
-      border-radius: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    .gestion-login-container button {
-      width: 100%;
-      padding: 0.75rem;
-      margin-top: 1.5rem;
-      background: #e74c3c;
-      border: none;
-      border-radius: 0.5rem;
-      color: #fff;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .gestion-login-container button:hover {
-      background: #c0392b;
-    }
-  </style>
+  {{ parent() }}
 {% endblock %}
 
 {% block body %}
-  <div class="gestion-login-container">
-    <h1>Área de Gestión</h1>
+  <div class="flex flex-col h-full overflow-hidden bg-[#1C1C1C]">
+    {# Añadido py-12 para más separación vertical #}
+    <div class="flex-grow flex items-center justify-center px-4 py-12">
+      <div class="w-full max-w-md bg-gray-800 p-8 rounded-2xl shadow-lg mt-8">
+        <h1 class="text-4xl font-extrabold text-center mb-6 text-white">
+          Área de <span class="text-red-500">Gestión</span>
+        </h1>
 
-    {% if error %}
-      <div class="error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+        {% if error %}
+          <div class="bg-red-500/10 text-red-300 p-3 rounded-md text-sm mb-4">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+          </div>
+        {% endif %}
 
-    <form action="{{ path('gestion_login') }}" method="post">
-      <div class="form-group">
-        <label for="username">Usuario</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}" required autofocus>
+        <form action="{{ path('gestion_login') }}" method="post" class="space-y-4">
+          <div>
+            <label for="username" class="block text-sm font-medium mb-1 text-white">
+              Usuario
+            </label>
+            <input
+              id="username"
+              name="_username"
+              value="{{ last_username }}"
+              required
+              autofocus
+              placeholder="Usuario"
+              class="w-full px-4 py-2 bg-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+
+          <div>
+            <label for="password" class="block text-sm font-medium mb-1 text-white">
+              Contraseña
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="_password"
+              required
+              placeholder="••••••••"
+              class="w-full px-4 py-2 bg-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3 bg-red-500 hover:bg-red-600 rounded-full font-semibold text-lg text-white transition"
+          >
+            Entrar Gestión
+          </button>
+        </form>
       </div>
-
-      <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" name="_password" required>
-      </div>
-
-      <button type="submit">Entrar Gestión</button>
-    </form>
+    </div>
   </div>
 {% endblock %}
