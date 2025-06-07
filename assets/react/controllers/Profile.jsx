@@ -63,7 +63,7 @@ export default function Profile({ initialData, apiUrl }) {
           {canFollow ? (
             <button
               onClick={toggleFollow}
-              className={`px-6 py-2 font-medium rounded-full shadow transition-colors ${
+              className={`px-6 py-2 font-medium cursor-pointer rounded-full shadow transition-colors ${
                 isFollowing
                   ? "bg-red-500 text-white hover:bg-red-600"
                   : "bg-blue-500 text-white hover:bg-blue-600"
