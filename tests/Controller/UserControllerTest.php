@@ -21,6 +21,7 @@ class UserControllerAjaxTest extends WebTestCase
         $container    = static::getContainer();
         $this->em     = $container->get('doctrine')->getManager();
 
+
         $this->em->createQuery('DELETE App\\Entity\\Post p')->execute();
         $this->em->createQuery('DELETE App\\Entity\\User u')->execute();
 

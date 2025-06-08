@@ -41,15 +41,12 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name:'edit', methods:['GET','POST'])]
     public function edit(User $user, Request $request, EntityManagerInterface $em): Response
     {
-        // 1) Creamos el formulario con UserType
         $form = $this->createForm(UserType::class, $user);
 
-        // 2) Quitar el campo "roles" (para que no intente hacer get/set de esa propiedad)
         if ($form->has('roles')) {
             $form->remove('roles');
         }
 
-        // 3) Manejamos la petición
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
