@@ -1,5 +1,4 @@
 <?php
-// src/Form/RegistrationFormType.php
 namespace App\Form;
 
 use App\Entity\User;
@@ -15,6 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RegistrationFormType extends AbstractType
 {
+    
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
