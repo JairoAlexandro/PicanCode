@@ -87,14 +87,6 @@ PicanCode es un proyecto en Symfony que incluye:
    ll
    ```
 
-## Uso
-
-Después de crear el enlace simbólico:
-
-1. Abre tu navegador y ve a [http://localhost](http://localhost).
-2. Haz click en la pestaña **VirtualHost**.
-3. Selecciona tu proyecto **PicanCode** para verlo en el navegador.
-
 ## Configuración de hosts en Windows
 
 En Windows, edita el archivo `hosts` para mapear tu proyecto:
@@ -114,6 +106,16 @@ En Windows, edita el archivo `hosts` para mapear tu proyecto:
    ```
 
 4. Guarda los cambios.
+
+## Uso
+
+Después de crear el enlace simbólico:
+
+1. Abre tu navegador y ve a [http://localhost](http://localhost).
+2. Haz click en la pestaña **VirtualHost**.
+3. Selecciona tu proyecto **PicanCode** para verlo en el navegador.
+
+
 
 ## Acceso al directorio desde Windows
 
