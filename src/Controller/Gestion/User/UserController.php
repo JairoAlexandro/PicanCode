@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Gestion;
+namespace App\Controller\Gestion\User;
 
 use App\Entity\User;
 use App\Form\UserType;

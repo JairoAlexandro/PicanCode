@@ -1,9 +1,10 @@
 <?php
-namespace App\Controller\Gestion;
+namespace App\Controller\Gestion\Post;
 
 use App\Entity\Post;
 use App\Form\PostType;
 use Doctrine\ORM\EntityManagerInterface;
+use Dom\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request,Response,RedirectResponse};
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,6 +12,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/gestion/post', name: 'gestion_post_')]
 class PostController extends AbstractController
 {
+
+    public function __construct(private readonly EntityManagerInterface $em)
+    {
+        
+    }
+
     #[Route('/', name:'index')]
     public function index(Request $request, EntityManagerInterface $em): Response
     {

@@ -1,6 +1,6 @@
 <?php
-// src/Repository/PostRepository.php
-namespace App\Repository;
+
+namespace App\Repository\Post;
 
 use App\Entity\Post;
 use App\Entity\User;
@@ -26,12 +26,11 @@ class PostRepository extends ServiceEntityRepository
             ->orderBy('p.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     /**
-     * Devuelve los posts más recientes.
+     * Devuelve los posts más recientes (por defecto hasta 50).
      *
      * @param int $limit
      * @return Post[]
@@ -42,12 +41,11 @@ class PostRepository extends ServiceEntityRepository
             ->orderBy('p.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     /**
-     * Devuelve los posts de los usuarios a los que sigue el usuario dado.
+     * Devuelve los posts de los usuarios a los que sigue $user.
      *
      * @param User $user
      * @param int  $limit
@@ -55,7 +53,6 @@ class PostRepository extends ServiceEntityRepository
      */
     public function findByFollowing(User $user, int $limit = 50): array
     {
-        // Obtener IDs de usuarios seguidos
         $followingIds = $user->getFollowing()
             ->map(fn($f) => $f->getFollowed()->getId())
             ->toArray();
@@ -70,7 +67,6 @@ class PostRepository extends ServiceEntityRepository
             ->orderBy('p.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 }

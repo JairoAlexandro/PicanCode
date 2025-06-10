@@ -2,7 +2,7 @@
 
 namespace App\Tests\Repository;
 
-use App\Repository\PostRepository;
+use App\Repository\Post\PostRepository;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;

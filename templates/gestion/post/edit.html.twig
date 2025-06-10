@@ -43,6 +43,7 @@
           }) }}
           {{ form_widget(form.content, {
             attr: {
+              id:          'code_input',
               placeholder: '// Escribe o pega tu código aquí...',
               class: 'w-full font-mono bg-gray-800 border border-gray-700 text-green-400 placeholder-green-600 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 min-h-[120px] resize-y'
             }
@@ -53,7 +54,7 @@
           <label class="block text-gray-200 font-medium mb-2">
             Vista previa
           </label>
-          <pre class="w-full h-48 bg-gray-800 border border-gray-700 rounded-lg p-4 font-mono text-sm text-green-400 overflow-auto whitespace-pre-wrap">
+          <pre id="code_preview" class="w-full h-48 bg-gray-800 border border-gray-700 rounded-lg p-4 font-mono text-sm text-green-400 overflow-auto whitespace-pre-wrap">
             {% set currentContent = form.content.vars.value %}
             {% if currentContent is not empty %}
               {{ currentContent }}
@@ -78,14 +79,28 @@
           <button
             type="submit"
             class="w-full bg-gradient-to-br from-green-600 to-green-500 hover:from-green-700 hover:to-green-600
-                 text-white font-bold py-3 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition"
+                 text-white font-bold py-3 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
           >
             Guardar Cambios
           </button>
         </div>
 
       {{ form_end(form) }}
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const input   = document.getElementById('code_input');
+          const preview = document.getElementById('code_preview');
 
+          if (!input || !preview) return;
+
+          input.addEventListener('input', () => {
+            const text = input.value.trim();
+            preview.textContent = text !== '' 
+              ? text 
+              : '// Verás tu código aquí…';
+            });
+          });
+        </script>
       <div class="mt-6 text-center">
         <a
           href="{{ path('gestion_post_index') }}"

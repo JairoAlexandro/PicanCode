@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Front\User;
 
 use App\Entity\User;
 use App\Entity\Follower;
-use App\Repository\UserRepository;
+use App\Repository\User\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{
@@ -15,8 +15,13 @@ use Symfony\Component\HttpFoundation\{
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
+
+//Uniria bajo una misma carpeta este y ProfileController, ya que ambos son de usuario
+//y asi se agrupan mejor las funcionalidades relacionadas con el usuario
+
 class UserController extends AbstractController
 {
+
     #[Route('/user/{id}', name: 'user_profile', requirements: ['id' => '\\d+'], methods: ['GET','POST'])]
     public function profile(
         int $id,

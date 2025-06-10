@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Front\User;
 
 use App\Entity\User;
 use App\Form\ProfileEditType;
