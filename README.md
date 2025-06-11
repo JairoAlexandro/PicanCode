@@ -247,7 +247,6 @@ En el .env-example esta todo lo necesario para que creeis el .env, simplemente c
    XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text
    ```
 
-
  Puede que tengas que retocar el .env.test para la base de datos de los test, pero como esta ya puesto deberia bastar.
 
  Aquí dejo el resultado de los tests del back:
@@ -264,4 +263,4 @@ En el .env-example esta todo lo necesario para que creeis el .env, simplemente c
 
 ## Licencia
 
-Licencia MIT. ¡A tope con el código! 🚀
+Licencia MIT.
