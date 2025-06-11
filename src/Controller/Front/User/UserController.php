@@ -16,9 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 
-//Uniria bajo una misma carpeta este y ProfileController, ya que ambos son de usuario
-//y asi se agrupan mejor las funcionalidades relacionadas con el usuario
-
 class UserController extends AbstractController
 {
 

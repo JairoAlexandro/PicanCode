@@ -1,7 +1,6 @@
 <?php
-// tests/Controller/RegistrationControllerTest.php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\Front;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,14 +10,19 @@ use Symfony\Component\HttpFoundation\Response;
 class RegistrationControllerTest extends WebTestCase
 {
     private $client;
-    private $em;
+    private $em; 
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->client = static::createClient();
         $this->em     = static::getContainer()->get(EntityManagerInterface::class);
 
-        $this->em->createQuery('DELETE FROM App\\Entity\\User u')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Comment c')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Like l')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Post p')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Follower f')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\User u')->execute();
     }
 
     public function testRegisterPageLoadsForAnonymous(): void
@@ -33,7 +37,8 @@ class RegistrationControllerTest extends WebTestCase
         $user = (new User())
             ->setEmail('a@b.com')
             ->setUsername('test')
-            ->setPassword('irrelevant');
+            ->setPassword('irrelevant')
+            ->setCreatedAt(new \DateTime());
         $this->em->persist($user);
         $this->em->flush();
 
@@ -49,13 +54,11 @@ class RegistrationControllerTest extends WebTestCase
                 'email'         => 'not-an-email',
                 'username'      => '',
                 'plainPassword' => ['first' => 'short', 'second' => 'short'],
-
             ],
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertSelectorExists('form[name="registration_form"]');
-
         $this->assertSelectorExists('input[name="registration_form[email]"][value="not-an-email"]');
     }
 
@@ -63,7 +66,6 @@ class RegistrationControllerTest extends WebTestCase
     {
         $this->client->xmlHttpRequest('POST', '/register', []);
         $response = $this->client->getResponse();
-
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
         $json = json_decode($response->getContent(), true);
@@ -76,9 +78,7 @@ class RegistrationControllerTest extends WebTestCase
     public function testAjaxValidSubmissionReturnsSuccess(): void
     {
         $crawler = $this->client->request('GET', '/register');
-        $token   = $crawler
-            ->filter('input[name="registration_form[_token]"]')
-            ->attr('value');
+        $token   = $crawler->filter('input[name="registration_form[_token]"]')->attr('value');
 
         $this->client->xmlHttpRequest('POST', '/register', [
             'registration_form' => [

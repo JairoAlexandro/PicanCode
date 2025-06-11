@@ -1,29 +1,32 @@
 <?php
-namespace App\Tests\Controller;
+
+namespace App\Tests\Controller\Front;
 
 use App\Entity\Post;
 use App\Entity\User;
 use App\Entity\Follower;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserControllerAjaxTest extends WebTestCase
 {
     private $client;
-    private $em;
-    private $user;
-    private $otherUser;
+    private $em;            
+    private User $user;
+    private User $otherUser;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->client = static::createClient();
-        $container    = static::getContainer();
-        $this->em     = $container->get('doctrine')->getManager();
+        $this->em     = static::getContainer()->get(EntityManagerInterface::class);
 
-
-        $this->em->createQuery('DELETE App\\Entity\\Post p')->execute();
-        $this->em->createQuery('DELETE App\\Entity\\User u')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Comment c')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Like l')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Post p')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Follower f')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\User u')->execute();
 
         $this->user = (new User())
             ->setUsername('user1')
@@ -44,32 +47,30 @@ class UserControllerAjaxTest extends WebTestCase
 
     public function testGetProfileAnonymous(): void
     {
-        $this->client->request('GET', '/user/' . $this->otherUser->getId());
+        $this->client->request('GET', '/user/'.$this->otherUser->getId());
         $this->assertResponseRedirects('/login');
     }
 
     public function testGetProfileAuthenticated(): void
     {
         $this->client->loginUser($this->user);
-        $this->client->request('GET', '/user/' . $this->otherUser->getId());
+        $this->client->request('GET', '/user/'.$this->otherUser->getId());
 
         $this->assertResponseIsSuccessful();
-        $content = $this->client->getResponse()->getContent();
-        $this->assertStringContainsString('user2', $content);
+        $this->assertStringContainsString('user2', $this->client->getResponse()->getContent());
     }
 
     public function testProfileNotFound(): void
     {
         $this->client->loginUser($this->user);
         $this->client->request('GET', '/user/99999');
-
         $this->assertResponseStatusCodeSame(404);
     }
 
     public function testInvalidCsrfReturns403(): void
     {
         $this->client->loginUser($this->user);
-        $this->client->xmlHttpRequest('POST', '/user/' . $this->otherUser->getId(), [
+        $this->client->xmlHttpRequest('POST', '/user/'.$this->otherUser->getId(), [
             'follow' => '1',
             '_token' => 'invalid',
         ]);
@@ -77,6 +78,6 @@ class UserControllerAjaxTest extends WebTestCase
         $this->assertResponseStatusCodeSame(403);
         $data = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertFalse($data['success']);
-        $this->assertContains('Token CSRF inválido', $data['errors']);
+        $this->assertStringContainsString('Token CSRF inválido', implode(' ', $data['errors']));
     }
 }

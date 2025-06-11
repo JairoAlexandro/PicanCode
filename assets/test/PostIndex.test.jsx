@@ -20,6 +20,7 @@ const samplePosts = [
     snippet: 'Este es un snippet de prueba que excede los 150 caracteres. '.repeat(4),
     likes: 5,
     comments: 2,
+    commentsCount: 2,  
     media: null
   }
 ];

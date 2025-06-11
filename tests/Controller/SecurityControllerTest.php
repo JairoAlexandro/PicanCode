@@ -1,6 +1,7 @@
 <?php
+// tests/Controller/Front/SecurityControllerTest.php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\Front;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -9,27 +10,26 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class SecurityControllerTest extends WebTestCase
 {
     private $client;
-    private EntityManagerInterface $em;
+    private $em;  
 
     protected function setUp(): void
     {
+        parent::setUp();
         self::ensureKernelShutdown();
         $this->client = static::createClient();
-        $this->em = $this->client->getContainer()->get(EntityManagerInterface::class);
-        // Limpiar usuarios
-        $this->em->createQuery('DELETE FROM App\\Entity\\User u')->execute();
+        $this->em     = static::getContainer()->get(EntityManagerInterface::class);
+
+        $this->em->createQuery('DELETE FROM App\Entity\Comment c')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Like l')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Post p')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Follower f')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\User u')->execute();
     }
 
     public function testLoginPageLoads(): void
     {
         $this->client->request('GET', '/login');
-        $response = $this->client->getResponse();
-
-        $this->assertTrue(
-            $response->isSuccessful(),
-            'Login page should load successfully.'
-        );
-        // Comprueba que los campos de login existen
+        $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('input[name="_username"]');
         $this->assertSelectorExists('input[name="_password"]');
     }
@@ -46,48 +46,25 @@ class SecurityControllerTest extends WebTestCase
 
         $this->client->loginUser($user);
         $this->client->request('GET', '/login');
-
-        $this->assertTrue(
-            $this->client->getResponse()->isRedirect(),
-            'Authenticated user should be redirected from login.'
-        );
-        $this->assertStringContainsString(
-            '/posts',
-            $this->client->getResponse()->headers->get('Location')
-        );
+        $this->assertResponseRedirects('/posts');
     }
 
     public function testLogoutRedirects(): void
     {
         $this->client->request('GET', '/logout');
-        $this->assertTrue(
-            $this->client->getResponse()->isRedirect(),
-            'Logout path should redirect.'
-        );
+        $this->assertResponseRedirects();
     }
 
     public function testGestionRedirectsToLogin(): void
     {
         $this->client->request('GET', '/gestion');
-        $this->assertTrue(
-            $this->client->getResponse()->isRedirect(),
-            'Gestion home should redirect.'
-        );
-        $this->assertStringContainsString(
-            '/gestion/login',
-            $this->client->getResponse()->headers->get('Location')
-        );
+        $this->assertResponseRedirects('/gestion/login');
     }
 
     public function testGestionLoginPageLoads(): void
     {
         $this->client->request('GET', '/gestion/login');
-        $response = $this->client->getResponse();
-
-        $this->assertTrue(
-            $response->isSuccessful(),
-            'Gestion login page should load.'
-        );
+        $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('input[name="_username"]');
         $this->assertSelectorExists('input[name="_password"]');
     }
@@ -95,10 +72,7 @@ class SecurityControllerTest extends WebTestCase
     public function testGestionLogoutRedirects(): void
     {
         $this->client->request('GET', '/gestion/logout');
-        $this->assertTrue(
-            $this->client->getResponse()->isRedirect(),
-            'Gestion logout should redirect.'
-        );
+        $this->assertResponseRedirects();
     }
 
     public function testLogoutMethodsAreCallable(): void
@@ -106,6 +80,6 @@ class SecurityControllerTest extends WebTestCase
         $controller = new \App\Controller\SecurityController();
         $controller->logoutApp();
         $controller->logoutGestion();
-        $this->assertTrue(true, 'Logout methods should be callable and do nothing.');
+        $this->assertTrue(true);
     }
 }

@@ -9,7 +9,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    //Aqui está todo mezclado desde gestion y lo suyo seria tener seguridad separada, y cada cosa en su sitio
 
     #[Route(path: '/login', name: 'app_login')]
     public function loginApp(AuthenticationUtils $authUtils): Response
