@@ -2,266 +2,232 @@
 
 ## Descripción
 
-PicanCode es un proyecto en Symfony que incluye:
+PicanCode es un proyecto basado en Symfony que ofrece:
 
-* Login público para usuarios normales.
-* Área de gestión bajo `/gestion` con acceso exclusivo para un único admin (`picanadmin`).
-* CRUD completo para Usuarios, Posts, Comentarios, Likes, Seguidores y Mensajes.
-* Panel de gestión con sidebar para navegar entre secciones.
+- **Login público** para usuarios normales.  
+- **Área de gestión** (`/gestion`) de acceso exclusivo para el admin `picanadmin`.  
+- **CRUD completo** para Usuarios, Posts, Comentarios, Likes, Seguidores y Mensajes.  
+- **Panel de gestión** con sidebar para navegar entre secciones.
+
+---
+
+## 📑 Tabla de contenidos
+
+1. [Requisitos](#requisitos)  
+2. [Instalación](#instalación)  
+3. [Configuración de hosts (Windows)](#configuración-de-hosts-windows)  
+4. [Uso](#uso)  
+5. [Acceso al directorio desde Windows](#acceso-al-directorio-desde-windows)  
+6. [Visualizar la base de datos](#visualizar-la-base-de-datos)  
+7. [Variables de entorno](#variables-de-entorno)  
+8. [Estructura de carpetas](#estructura-de-carpetas)  
+9. [Tests](#tests)  
+10. [Licencia](#licencia)  
+
+---
 
 ## Requisitos
 
-* Windows 10/11 con WSL2 instalado.
-* Distribución Linux (Ubuntu recomendado) en WSL.
-* Docker
-* Dbeaver
-* Devilbox (Docker-based env) clonado en tu usuario de WSL.
-* PHP 8.1+
-* Composer
-* Node.js & npm para assets
-* Symfony CLI (opcional)
+- Windows 10/11 con WSL2 (Ubuntu recomendado)  
+- Docker & Devilbox (entorno Docker-based)  
+- DBeaver (GUI para bases de datos)  
+- PHP 8.1+  
+- Composer  
+- Node.js & npm  
+- Symfony CLI (opcional)
+
+---
 
 ## Instalación
 
-1. **Configurar Devilbox en WSL**
-   Clona Devilbox en tu directorio de usuario:
-
-   ```bash
+1. **Configurar Devilbox en WSL**  
+   \`\`\`bash
    cd ~
    git clone https://github.com/cytopia/devilbox.git
    cd devilbox
    cp env-example .env
-   ```
-
-2. **Arrancar Devilbox**
-   Inicia los contenedores en segundo plano:
-
-   ```bash
+   \`\`\`
+2. **Arrancar los contenedores**  
+   \`\`\`bash
    docker-compose up -d
-   ```
-
-3. **Entrar al shell de Devilbox**
-
-   ```bash
+   \`\`\`
+3. **Entrar al shell de Devilbox**  
+   \`\`\`bash
    ./shell.sh
-   ```
-
-4. **Clonar PicanCode dentro de Devilbox**
-
-   ```bash
+   \`\`\`
+4. **Clonar PicanCode**  
+   \`\`\`bash
    cd /shared/httpd
-   mkdir PicanCode
-   cd PicanCode
+   mkdir PicanCode && cd PicanCode
    git clone https://github.com/JairoAlexandro/PicanCode.git html
-   ```
-
-5. **Instalar dependencias y assets**
-
-   ```bash
+   \`\`\`
+5. **Instalar dependencias y compilar assets**  
+   \`\`\`bash
    cd html
    composer install
-   ```
-
-   ```bash
    npm install
    npm run dev
-
-   ````
-
+   \`\`\`
 6. **Crear esquema de base de datos y cargar fixtures**  
-   ```bash
+   \`\`\`bash
    php bin/console doctrine:database:create
    php bin/console doctrine:migrations:migrate
-   # En caso de que las migraciones te den fallo, usa este comando
+   # (Si hay errores de migraciones)
    php bin/console doctrine:schema:update --force
    php bin/console doctrine:fixtures:load
-   ````
-
-7. **Crear enlace simbólico para Devilbox**
-
-   ```bash
+   \`\`\`
+7. **Crear enlace simbólico para el virtual host**  
+   \`\`\`bash
    cd /shared/httpd/PicanCode
-   # Ver directorio html
-   ls html/
-   # Crear enlace simbólico entre html/public y htdocs
    ln -s html/public htdocs
-   # Verificar
    ll
-   ```
+   \`\`\`
 
-## Configuración de hosts en Windows
+---
 
-En Windows, edita el archivo `hosts` para mapear tu proyecto:
+## Configuración de hosts (Windows)
 
-1. Abre el Bloc de notas (u otro editor) con permisos de administrador.
-
-2. Abre el fichero:
-
-   ```
-   C:\Windows\System32\drivers\etc\hosts
-   ```
-
+1. Abre el Bloc de notas como **Administrador**.  
+2. Edita \`C:\Windows\System32\drivers\etc\hosts\`.  
 3. Añade al final:
-
-   ```
+   \`\`\`
    127.0.0.1 picancode.dvl.to
-   ```
+   \`\`\`
+4. Guarda y cierra.
 
-4. Guarda los cambios.
+---
 
 ## Uso
 
-Después de crear el enlace simbólico:
+1. Navega a [http://localhost](http://localhost).  
+2. En la pestaña **VirtualHost**, selecciona **PicanCode**.  
+3. Accede a las rutas públicas o al panel \`/gestion\` como admin.
 
-1. Abre tu navegador y ve a [http://localhost](http://localhost).
-2. Haz click en la pestaña **VirtualHost**.
-3. Selecciona tu proyecto **PicanCode** para verlo en el navegador.
-
-
+---
 
 ## Acceso al directorio desde Windows
 
-Para abrir los archivos de tu proyecto en un IDE (por ejemplo, PHPStorm), navega a:
+Para editar el código desde tu IDE (PHPStorm, VSCode, etc.):
 
-```
-//wsl.localhost/Ubuntu/home/<tuUsuario>/devilbox/data/www/
-```
+\`\`\`
+\\wsl.localhost\Ubuntu\home\<tuUsuario>\devilbox\data\www\PicanCode\html
+\`\`\`
+
+---
+
+## Visualizar la base de datos
+
+Abre DBeaver y sigue estos pasos:
+
+1. **New Database Connection** → **MySQL** → **Next**  
+2. Configura:
+   - **Server Host**: \`localhost\`  
+   - **Port**: \`3306\`  
+   - **Database**: \`picancode\` (opcional)  
+   - **Username**: \`db\`  
+   - **Password**: \`db\`  
+3. **Finish** para conectar.  
+4. En el panel izquierdo verás \`picancode\`.  
+   - Doble clic en una tabla para ver datos.  
+   - Clic derecho → **View Data** / **Edit Data**.  
+   - Para consultas: clic derecho → **SQL Editor** → **New SQL Script** → Escribe y **Execute** (▶️).
+
+---
+
+## Variables de entorno
+
+Copia el fichero de ejemplo y ajusta tus credenciales:
+
+\`\`\`bash
+cp .env-example .env
+\`\`\`
+
+En la línea \`DATABASE_URL\` coloca tu usuario y contraseña:
+\`\`\`
+DATABASE_URL="mysql://root:<tu_contraseña>@127.0.0.1:3306/picancode"
+\`\`\`
+
+---
 
 ## Estructura de carpetas
 
-```
+\`\`\`bash
 project-root/
-├── assets/                     ← Recursos de frontend (JS, CSS, imágenes)
-│   ├── controllers/            ← Controladores de Stimulus/vanilla-JS
-│   │   └── …                    
-│   └── react/                  ← Aplicación React independiente
-│       └── controllers/
-│           ├── PostIndex.jsx
-│           ├── PostShow.jsx
-│           ├── PostNew.jsx
-│           ├── PostEdit.jsx
-│           ├── Profile.jsx
-│           └── ProfileEdit.jsx
-├── src/                        ← Código backend (Symfony PHP)
-│   ├── Controller/             ← Controladores HTTP
-│   │   ├── Front/              ← Endpoints públicos
-│   │   │   └── PostController.php
+├── assets/                   ← Frontend (JS, CSS, imágenes)
+│   ├── controllers/          ← Stimulus / vanilla-JS
+│   └── react/                ← App React independiente
+│       └── controllers/…
+├── src/                      ← Backend Symfony (PHP)
+│   ├── Controller/
+│   │   ├── Front/            ← Endpoints públicos
 │   │   ├── SecurityController.php
 │   │   ├── ProfileController.php
-│   │   └── UserController.php  ← CRUD usuarios (bajo `/gestion/user`)
-│   ├── Dto/                    ← Data Transfer Objects
-│   ├── Entity/                 ← Entidades Doctrine
-│   ├── Form/                   ← Clases de formulario Symfony
-│   ├── Repository/             ← Repositorios Doctrine
-│   ├── Security/               ← Votantes, autenticadores, etc.
-│   ├── Service/                ← Lógica de negocio reusable
-│   └── Kernel.php              ← Punto de entrada de la aplicación
-├── templates/                  ← Vistas Twig
-│   ├── base.html.twig          ← Layout general (cabecera, pie)
-│   ├── security/               ← Formularios de login/registro
-│   │   └── login.html.twig
-│   ├── gestion/                ← Área de administración
-│   │   ├── base.html.twig      ← Layout con sidebar
-│   │   ├── panel.html.twig     ← Dashboard de gestión
-│   │   └── user/               ← Plantillas CRUD usuarios
-│   │       └── …               
-│   ├── post/                   ← Vistas públicas de posts
-│   │   └── …                   
-│   ├── registration/           ← Vistas de registro
-│   │   └── …                   
-│   └── user/                   ← Perfil y settings de usuario
-│       └── …                   
-├── tests/                      ← Pruebas unitarias e integradas
+│   │   └── UserController.php
+│   ├── Dto/
+│   ├── Entity/
+│   ├── Form/
+│   ├── Repository/
+│   ├── Security/
+│   ├── Service/
+│   └── Kernel.php
+├── templates/                ← Vistas Twig
+│   ├── base.html.twig
+│   ├── security/login.html.twig
+│   ├── gestion/
+│   │   ├── base.html.twig
+│   │   ├── panel.html.twig
+│   │   └── user/…
+│   ├── post/…
+│   ├── registration/…
+│   └── user/…
+├── tests/                    ← PHPUnit & Vitest
 │   └── Controller/
-│       ├── Front/
-│       │   └── PostControllerTest.php
+│       ├── Front/PostControllerTest.php
 │       └── User/
 │           ├── HomeControllerTest.php
 │           ├── ProfileControllerTest.php
 │           ├── RegistrationControllerTest.php
 │           └── UserControllerTest.php
-├── config/                     ← Configuración de Symfony (routes, services…)
-├── migrations/                 ← Migraciones de BD
-├── public/                     ← DocumentRoot (entry-point, assets compilados)
+├── config/                   ← Symfony (routes, services…)
+├── migrations/               ← Doctrine migrations
+├── public/                   ← Document root & assets compilados
 │   └── index.php
-├── node_modules/               ← Dependencias NPM/Yarn
-├── vite.config.js              ← Configuración de Vite
-├── vitest.config.js            ← Configuración de Vitest (tests JS)
-├── app.js                      ← Entry-point JS
-└── bootstrap.js                ← Inicialización de JS
+├── node_modules/
+├── vite.config.js
+├── vitest.config.js
+├── app.js
+└── bootstrap.js
 ```
-Sigue estos pasos para inspeccionar tu base de datos MySQL localmente:
 
-1. **Inicia DBeaver**  
-   Abre la aplicación en tu equipo.
+# Tests
 
-2. **Crea una nueva conexión**  
-   - En el panel **Database Navigator** (izquierda), haz clic derecho y selecciona **New Database Connection**.  
-   - En el asistente, elige **MySQL** y pulsa **Next**.
+### 1. Backend (PHPUnit)
+```bash
+# Crear y preparar BD de test
+php bin/console doctrine:database:create --env=test
+php bin/console doctrine:migrations:migrate --env=test
+# (O si fallan migraciones)
+php bin/console doctrine:schema:update --force --env=test
 
-3. **Configura la conexión**  
-   - **Server Host**: `localhost` (valor por defecto).  
-   - **Port**: `3306` (o el puerto que uses).  
-   - **Database**: `picancode` (opcional, puedes dejarlo en blanco para listar todas).  
-   - **Username**: `db`  
-   - **Password**: `db`  
+# Ejecutar tests con cobertura
+./vendor/bin/phpunit --testdox
+XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text
+```
 
-4. **Conéctate**  
-   Haz clic en **Finish** (o **Connect**) para establecer la conexión.
+![Tests Back](public/tests/Back.png)
 
-5. **Navega por tus datos**  
-   - En el árbol de la izquierda aparecerá tu base de datos `picancode`.  
-   - **Ver contenido**:  
-     - Doble clic sobre una tabla para abrir su vista de datos.  
-     - O clic derecho → **View Data** / **Edit Data** para consultar o modificar registros.  
-   - **Ejecutar consultas**:  
-     - Haz clic derecho sobre la base o tabla y selecciona **SQL Editor** → **New SQL Script**.  
-     - Escribe tu consulta y pulsa **Execute** (▶️).
+### 2. Frontend (Vitest)
+```bash
+cd assets
+npm run test
+```
 
-## Funcionar el proyecto
-En el .env-example esta todo lo necesario para que creeis el .env, simplemente copiad y pegadlo, en en database url, en la parte de "root:" root puede ser vuestro usuario y despues de los : ahí iría vuestra contraseña, pero por defecto se usa root: y sin contraseña.
+![Tests Front](public/tests/Front.png)
 
-## Test
+> **Cobertura total:** > 60%
 
-1. Para ejecutar los test del back, lo primero es tener una copia de la base de datos llamada "picancode_test" la cual la puedes crear con los siguientes comandos:
-
-   ```bash
-   # crea la BD de test
-   php bin/console doctrine:database:create --env=test
-
-   # las migraciones
-   php bin/console doctrine:migrations:migrate --env=test
-
-   # En caso de que las migraciones te den fallo, usa este comando
-   php bin/console doctrine:schema:update --force --env=test
-   ```
-
- Despues tienes que entrar en el shell de devilbox, estar en la ruta /shared/httpd/PicanCode/html y ejecutar el siguiente comando:
-
-   ```bash
-   ./vendor/bin/phpunit --testdox
-   ```
- Para ver el porcentaje total del proyecto seria con el siguiente comando, el cual este supera el 60% total testeado
-
-   ```bash
-   XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text
-   ```
-
-
- Puede que tengas que retocar el .env.test para la base de datos de los test, pero como esta ya puesto deberia bastar.
-
- Aquí dejo el resultado de los tests del back:
-
- ![Tests Result Back](public/tests/Back.png)
-
-2. Para ejecutar los test del front, tienes que entrar en el shell de devilbox y estar en la ruta /shared/httpd/PicanCode/html/assets y ejecutar el siguiente comando:
-
-   ```bash
-   npm run test
-   ```
- Aquí dejo el resultado de los tests del front:
- ![Tests Result Front](public/tests/Front.png)
+---
 
 ## Licencia
 
-Licencia MIT. ¡A tope con el código! 🚀
+Este proyecto está bajo **Licencia MIT**.
