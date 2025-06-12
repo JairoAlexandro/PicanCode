@@ -262,5 +262,5 @@ En el .env-example esta todo lo necesario para que creeis el .env, simplemente c
  ![Tests Result Front](public/tests/Front.png)
 
 ## Licencia
-Funciono?
+
 Licencia MIT.
