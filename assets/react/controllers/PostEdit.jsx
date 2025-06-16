@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 export default function PostEdit({ initialData, apiUrl }) {
   const [language, setLanguage] = useState(initialData.title || "javascript");
@@ -6,6 +6,7 @@ export default function PostEdit({ initialData, apiUrl }) {
   const [mediaFile, setMediaFile] = useState(null);
   const [mediaPreview, setMediaPreview] = useState(initialData.media || null);
   const [errors, setErrors] = useState([]);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (!initialData.media) {
@@ -19,12 +20,17 @@ export default function PostEdit({ initialData, apiUrl }) {
           }
         })
         .catch(() => {
+
         });
     }
   }, [apiUrl, initialData.media]);
 
+  const openFileDialog = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleMediaChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     setMediaFile(file);
     if (file) {
       const reader = new FileReader();
@@ -153,11 +159,13 @@ export default function PostEdit({ initialData, apiUrl }) {
               </span>
               <button
                 type="button"
-                className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-1 rounded cursor-pointer"
+                className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-1 rounded cursor-pointer mt-2"
+                onClick={openFileDialog}
               >
                 Upload Media
               </button>
               <input
+                ref={fileInputRef}
                 id="media-upload"
                 type="file"
                 accept="image/*,video/*"
@@ -168,25 +176,25 @@ export default function PostEdit({ initialData, apiUrl }) {
             {mediaPreview && (
               <div className="mt-2">
                 {mediaPreview.startsWith("data:") ? (
-                  mediaFile && mediaFile.type.startsWith("image/") ? (
+                  mediaFile?.type.startsWith("image/") ? (
                     <img
                       src={mediaPreview}
                       alt="Preview"
                       className="w-full h-auto rounded-lg border border-gray-700 shadow-sm"
                     />
-                  ) : mediaFile && mediaFile.type.startsWith("video/") ? (
+                  ) : mediaFile?.type.startsWith("video/") ? (
                     <video
                       src={mediaPreview}
                       controls
                       className="w-full h-auto rounded-lg border border-gray-700 shadow-sm"
                     />
-                  ) : initialData.media ? (
+                  ) : (
                     <img
                       src={initialData.media}
                       alt="Preview existente"
                       className="w-full h-auto rounded-lg border border-gray-700 shadow-sm"
                     />
-                  ) : null
+                  )
                 ) : (
                   <img
                     src={mediaPreview}
@@ -197,7 +205,6 @@ export default function PostEdit({ initialData, apiUrl }) {
               </div>
             )}
           </div>
-
           <div>
             <button
               type="submit"
