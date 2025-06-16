@@ -161,6 +161,7 @@ export default function PostNew({ initialData = {}, apiUrl }) {
                     src={mediaPreview}
                     alt="Preview"
                     className="w-full h-auto rounded-lg border border-gray-700 shadow-sm"
+                    loading="lazy"
                   />
                 ) : mediaFile && mediaFile.type.startsWith("video/") ? (
                   <video
@@ -174,6 +175,7 @@ export default function PostNew({ initialData = {}, apiUrl }) {
                   src={mediaPreview}
                   alt="Existing Preview"
                   className="w-full h-auto rounded-lg border border-gray-700 shadow-sm"
+                  loading="lazy"
                 />
               )}
             </div>

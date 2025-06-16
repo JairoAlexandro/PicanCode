@@ -136,6 +136,7 @@ export default function Profile({ initialData, apiUrl }) {
                       src={`/uploads/posts/${p.media}`}
                       alt={p.title}
                       className="w-full h-full object-contain"
+                      loading="lazy"
                     />
                   </div>
                 )}

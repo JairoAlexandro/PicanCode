@@ -81,6 +81,7 @@ export default function PostIndex({ apiUrl, initialData }) {
                         }
                         alt={`${post.author} avatar`}
                         className="w-8 h-8 rounded-full"
+                        loading="lazy"
                       />
                     </a>
                     <a
@@ -102,6 +103,7 @@ export default function PostIndex({ apiUrl, initialData }) {
                     src={`/uploads/posts/${post.media}`}
                     alt={post.title}
                     className="w-full h-full object-contain rounded-lg"
+                    loading="lazy"
                   />
                 </div>
               )}

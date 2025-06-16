@@ -1,15 +1,19 @@
+{# templates/gestion/base.html.twig #}
 <!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     <link rel="icon" type="image/x-icon" href="{{ asset('images/faviconGestion.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/faviconGestion.ico') }}" />
+
     {% block stylesheets %}
       {{ encore_entry_link_tags('app') }}
     {% endblock %}
+    {% block javascripts %}
+      {{ encore_entry_script_tags('app') }}
+    {% endblock %}
   </head>
   <body class="min-h-screen bg-gray-900 text-gray-200 font-sans">
-  
     <header class="bg-gray-800 shadow-md">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
@@ -19,64 +23,49 @@
               <span class="text-xl font-semibold text-white">Gestión</span>
             </a>
           </div>
+
           <nav class="hidden md:flex space-x-4">
-            <a
-              href="{{ path('gestion_user_index') }}"
-              class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-gray-700 hover:text-white transition"
-            >
+            <a href="{{ path('gestion_user_index') }}"
+               class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-gray-700 hover:text-white transition">
               Usuarios
             </a>
-            <a
-              href="{{ path('gestion_post_index') }}"
-              class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-gray-700 hover:text-white transition"
-            >
+            <a href="{{ path('gestion_post_index') }}"
+               class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-gray-700 hover:text-white transition">
               Posts
             </a>
-            <a
-              href="{{ path('gestion_logout') }}"
-              class="px-3 py-2 rounded-md text-sm font-medium text-red-400 hover:text-red-300 hover:bg-gray-700 transition"
-            >
+            <a href="{{ path('gestion_logout') }}"
+               class="px-3 py-2 rounded-md text-sm font-medium text-red-400 hover:text-red-300 hover:bg-gray-700 transition">
               Cerrar Sesión
             </a>
           </nav>
+
           <div class="md:hidden">
             <button
               id="mobileMenuButton"
               class="p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none transition"
+              aria-label="Abrir menú móvil"
             >
-              <span class="sr-only">Abrir menú móvil</span>
-              <svg
-                class="h-6 w-6"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4 6h16M4 12h16M4 18h16" />
+                      d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           </div>
         </div>
       </div>
-      <div id="mobileMenu" class="md:hidden hidden bg-gray-800">
+
+      <div id="mobileMenu" class="hidden md:hidden bg-gray-800">
         <div class="px-2 pt-2 pb-3 space-y-1">
-          <a
-            href="{{ path('gestion_user_index') }}"
-            class="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:bg-gray-700 hover:text-white transition"
-          >
+          <a href="{{ path('gestion_user_index') }}"
+             class="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:bg-gray-700 hover:text-white transition">
             Usuarios
           </a>
-          <a
-            href="{{ path('gestion_post_index') }}"
-            class="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:bg-gray-700 hover:text-white transition"
-          >
+          <a href="{{ path('gestion_post_index') }}"
+             class="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:bg-gray-700 hover:text-white transition">
             Posts
           </a>
-          <a
-            href="{{ path('gestion_logout') }}"
-            class="block px-3 py-2 rounded-md text-base font-medium text-red-400 hover:text-red-300 hover:bg-gray-700 transition"
-          >
+          <a href="{{ path('gestion_logout') }}"
+             class="block px-3 py-2 rounded-md text-base font-medium text-red-400 hover:text-red-300 hover:bg-gray-700 transition">
             Cerrar Sesión
           </a>
         </div>
@@ -90,14 +79,20 @@
     </div>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const btn = document.getElementById('mobileMenuButton');
+      function initMobileMenu() {
+        const btn  = document.getElementById('mobileMenuButton');
         const menu = document.getElementById('mobileMenu');
-
-        btn.addEventListener('click', () => {
+        if (!btn || !menu) return;
+        // Desvinculamos posibles listeners viejos
+        btn.replaceWith(btn.cloneNode(true));
+        const freshBtn = document.getElementById('mobileMenuButton');
+        freshBtn.addEventListener('click', () => {
           menu.classList.toggle('hidden');
         });
-      });
+      }
+
+      document.addEventListener('DOMContentLoaded', initMobileMenu);
+      document.addEventListener('turbo:load',       initMobileMenu);
     </script>
   </body>
 </html>

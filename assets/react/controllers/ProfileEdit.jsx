@@ -70,6 +70,7 @@ export default function ProfileEdit({ initialData = {}, apiUrl }) {
               src={avatarPreview}
               alt="Avatar Preview"
               className="w-24 h-24 rounded-full object-cover mx-auto shadow-md"
+              loading="lazy"
             />
           ) : (
             <div className="w-24 h-24 rounded-full bg-gray-700 text-gray-400 flex items-center justify-center mx-auto shadow-md text-3xl">

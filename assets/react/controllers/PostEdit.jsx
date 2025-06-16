@@ -181,6 +181,7 @@ export default function PostEdit({ initialData, apiUrl }) {
                       src={mediaPreview}
                       alt="Preview"
                       className="w-full h-auto rounded-lg border border-gray-700 shadow-sm"
+                      loading="lazy"
                     />
                   ) : mediaFile?.type.startsWith("video/") ? (
                     <video
@@ -193,6 +194,7 @@ export default function PostEdit({ initialData, apiUrl }) {
                       src={initialData.media}
                       alt="Preview existente"
                       className="w-full h-auto rounded-lg border border-gray-700 shadow-sm"
+                      loading="lazy"
                     />
                   )
                 ) : (
@@ -200,6 +202,7 @@ export default function PostEdit({ initialData, apiUrl }) {
                     src={mediaPreview}
                     alt="Preview existente"
                     className="w-full h-auto rounded-lg border border-gray-700 shadow-sm"
+                    loading="lazy"
                   />
                 )}
               </div>
