@@ -9,6 +9,31 @@ PicanCode es un proyecto en Symfony que incluye:
 * CRUD completo para Usuarios, Posts, Comentarios, Likes, Seguidores y Mensajes.
 * Panel de gestión con sidebar para navegar entre secciones.
 
+Estas son unas imágenes de la demo:
+
+1. **Login de usuario**  
+
+![Login](public/examples/login.png)
+
+2. **Página de inicio** 
+
+![Inicio](public/examples/inicio.png)
+
+3. **Perfil de usuario**  
+
+![Perfil](public/examples/perfil.png)
+
+4. **Formulario de creación de post**  
+
+![Crear Post](public/examples/crearpost.png)
+
+5. **Vista detallada de un post**  
+
+![Vista Post](public/examples/vistapost.png)
+
+
+
+
 ## Requisitos
 
 * Windows 10/11 con WSL2 instalado.
