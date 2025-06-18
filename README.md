@@ -33,8 +33,7 @@ Here are some demo screenshots:
 
 
 
-
-## Requisitos
+## Requirements
 
 * Windows 10/11 with WSL2 installed
 * Linux distribution (Ubuntu recommended) in WSL
